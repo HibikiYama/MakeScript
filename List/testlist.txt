@@ -1,0 +1,2 @@
+Priority ObjectName RA DEC Filter1 Filter2 Images IntegrationTime
+0 moon 12:12:12.123 12:12:12.123 H open 5 3.00
