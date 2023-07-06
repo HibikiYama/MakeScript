@@ -8,7 +8,7 @@ def MakeScriptName():
     return name
 
 def AddScriptName():
-    print('A script name is ...')
+    print('Script name is ...')
     name = input('Enter:')
     print('')
     return name

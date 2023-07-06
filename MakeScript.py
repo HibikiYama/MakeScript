@@ -584,4 +584,4 @@ else:
 
                             writer = csv.writer(F)
                             writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
-                print('------------------------------------ \nCompleted new script!')
+                print('------------------------------------ \nCompleted new script!!')
