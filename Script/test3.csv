@@ -1,5 +1,0 @@
-BlockID,Test,ObjectName,Test,RA,DEC,0.00,0.00,0.00,Filter1,Filter2,Random,1.0,2.0,3,Images,IntegrationTime
-A,Test,a,Test,1,1,0.00,0.00,0.00,1,1,Random,1.0,2.0,3,1,1
-B,Test,b,Test,2,2,0.00,0.00,0.00,2,2,Random,1.0,2.0,3,2,2
-C,Test,c,Test,3,3,0.00,0.00,0.00,3,3,Random,1.0,2.0,3,3,3
-D,Test,d,Test,4,4,0.00,0.00,0.00,4,4,Random,1.0,2.0,3,4,4

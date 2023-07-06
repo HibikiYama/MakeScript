@@ -1,1 +1,0 @@
-0 P00001 OU ObjectName bulge RA DEC 0.0 0.0 ROToffset Open H None 0.0 0.0 0 12 10.00 "" ""

@@ -1,1 +1,0 @@
-Priority BlockID Observer ObjectName ObjectType RA DEC RAoffset DECoffset ROToffset Filter1 Filter2 DitherType DitherRadius DitherPhase DitherTotal Images IntegrationTime Comment1 Comment2

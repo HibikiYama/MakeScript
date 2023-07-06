@@ -1,1 +1,0 @@
-0 BlockID OU ObjectName Test RA DEC 0.0 0.0 ROToffset Open H Circle 30.0 0.0 12 1 10.00 "" ""

@@ -1,1 +1,0 @@
-0 P00001 OU ObjectName Test RA DEC 0.0 0.0 ROToffset Filter1 Filter2 None 0.0 0.0 0 1 10.00 "" ""
