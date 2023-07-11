@@ -1,6 +1,6 @@
 # MakeScript.py
 
-**PRIME観測scriptを作成するツール。**インタラクティブに観測scriptを作成できるCustom-Making modeと、あらかじめ用意したファイルから自動で観測scriptを作成するAuto-Making modeが選べる。
+**PRIME観測scriptを作成するツール**。インタラクティブに観測scriptを作成できるCustom-Making modeと、あらかじめ用意したファイルから自動で観測scriptを作成するAuto-Making modeが選べる。
 - ## 観測script  
   Goddard softwareでは**csv形式**の観測scriptが使用される。scriptに必要な情報は以下の20個。  
 ```
