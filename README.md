@@ -19,7 +19,7 @@
  DitherType      : Ditheringの種類を指定 # DitherType : None, Circle, Random
  DitherRadius    : Ditheringの半径を指定
  DitherPhase     : Ditheringの開始角度を指定（Circle Ditheringのみ）
- DitherTotal     : Ditheringの回数を指定
+ DitherTotal     : Ditheringの回数を指定 (1以上、NINT=DitherTotal*Images)
  Images          : 撮影枚数を指定
  IntegrationTime : 露光時間を指定
  Comment1        : コメント欄1
