@@ -45,6 +45,14 @@
     python MakeScript.py -offset standard.txt -list testlist.txt -add obslist.csv -rd
     ```
 
+# SelectScript.py
+
+**選択したscript（例えばgrid）の中から指定した座標に近いターゲットを選び新たなscriptを作成する**。
+- ## How to use  
+  引数にはscript名、指定するRA、指定するDECを必ず入れる。作成された観測scriptは Script/ 以下に置かれる。デフォルトでは指定した座標に近い20個のターゲットを選ぶが、選びたいターゲット数を引数に入れることでカスタム可能。
+  ```bash
+  python SelectScript.py -script scriptname.csv -RA hh:mm:ss -DEC dd:mm:ss (-num 30)
+  ```
 
 # Required files
 - ## offset (.txt, .list, .csv)  

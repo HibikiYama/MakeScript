@@ -81,9 +81,11 @@ def find_closest_object(ra, dec, csv_path, num_closest=20):
     closest_objects['DEC'] = closest_objects['DEC'].apply(deg_to_dms)
 
     # CSVに出力
+    closest_objects_copy = closest_objects
+    closest_objects = closest_objects.drop(columns='dist')
     closest_objects.to_csv("Script/"+newname+".csv",na_rep='None',index=False)
 
-    return closest_objects[['ObjectName', 'RA', 'DEC', 'dist']][:20]
+    return closest_objects_copy[['ObjectName', 'RA', 'DEC', 'dist']][:20]
 
 if len(argv) < 7:
     print('Please select script and set RA and DEC!!\n(eg. python SelectScript.py -script script.csv -RA 2:30:40 -DEC -10:20:30)')
@@ -93,21 +95,29 @@ for i in range(0,len(argv)):
     if argv[i] == '-script':
         scriptname = argv[i+1]
         csv_path = 'Script/'+scriptname
-        print('Got Script!\n')
+        print('Got Script!')
         
         for j in range(0,len(argv)):
             if argv[j] == '-RA':
                 ra = argv[j+1]
-                print('Set RA!\nRA =',ra)
+                print('\nSet RA!\nRA =',ra)
 
                 for k in range(0,len(argv)):
                     if argv[k] == '-DEC':
                         dec = argv[k+1]
-                        print(dec)
-                        print('Set DEC!\nRA =',dec)
+                        print('\nSet DEC!\nDEC =',dec,'\n')
 
+                        for l in range(0,len(argv)):
+                            if argv[l] == '-num':
+                                num_closest = int(argv[l+1])
+                                print('Set number of select!\nNum =',num_closest,'\n')
+                                newname = CheckValue(fun.AddScriptName())
+                                print('\nScript name is',"'",newname,"'.\n")  
+                                closest_object = find_closest_object(ra, dec, csv_path, num_closest)
+                                print(closest_object)
+                                sys.exit()
+                        
                         newname = CheckValue(fun.AddScriptName())
-                        print('Script name is',"'",newname,"'.")   
-
+                        print('\nScript name is',"'",newname,"'.\n")  
                         closest_object = find_closest_object(ra, dec, csv_path)
                         print(closest_object)
