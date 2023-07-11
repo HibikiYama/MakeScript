@@ -602,7 +602,7 @@ else:
                             #DEC = Offset[6]
                             RAoffset = Offset[7]
                             DECoffset = Offset[8]
-                            ROToffset = round(float(Offset[9]) - ROT, 1)
+                            ROToffset = Offset[9]
                             Filter1 = Offset[10]
                             Filter2 = Offset[11]
                             DitherType = Offset[12]
