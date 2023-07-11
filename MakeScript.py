@@ -40,6 +40,9 @@ def CheckValue(func):
 
 def CustomScript(Offset):
 
+    if int(Offset[15]) <= 0 :
+        Offset[15] = '1'
+
     Priority = Offset[0]
     Observer = Offset[2]
     ObjectName = Offset[3]
@@ -60,7 +63,8 @@ def CustomScript(Offset):
     Comment1 = Offset[18]
     Comment2 = Offset[19]
 
-    print('[Offset values @Standard]')
+
+    print('[ Offset values @',OffsetName,']')
     print('**********************************')
     print('1.  Priority         :',Offset[0])
     print('2.  BlockID          :',BlockID)
@@ -86,18 +90,44 @@ def CustomScript(Offset):
 
 
     while True:
+        print('Do you want to change ObjectName?\nPress y (yes) or n (no).')
+        yn = fun.YesNo()
+        while not yn == 'y' and not yn == 'n':
+            print('')
+            print('Press y (yes) or n (no).')
+            yn = fun.YesNo()
+
+        if yn == 'y':
+            ObjectName = CheckValue(fun.AddObjectName())
+
+        elif yn == 'n':
+            ObjectName = Offset[3]
+
+        print('Do you want to change ObjectType?\nPress y (yes) or n (no).')
+        yn = fun.YesNo()
+        while not yn == 'y' and not yn == 'n':
+            print('')
+            print('Press y (yes) or n (no).')
+            yn = fun.YesNo()
+
+        if yn == 'y':
+            ObjectType = CheckValue(fun.AddObjectType())
+
+        elif yn == 'n':
+            ObjectType = Offset[4]
+
         print('Please set Priority, RA and DEC.\n')
         Priority = CheckValue(fun.AddPriority())
         RA = CheckValue(fun.AddRA())
         DEC = CheckValue(fun.AddDEC())
 
-        print('[Latest values @Standard]')
+        print('[ Latest values @',OffsetName,']')
         print('**********************************')
         print('1.  Priority         :',Priority)
         print('2.  BlockID          :',BlockID)
         print('3.  Observer         :',Offset[2])
-        print('4.  ObjectName       :',Offset[3])
-        print('5.  ObjectType       :',Offset[4])
+        print('4.  ObjectName       :',ObjectName)
+        print('5.  ObjectType       :',ObjectType)
         print('6.  RA               :',RA)
         print('7.  DEC              :',DEC)
         print('8.  RAoffset         :',Offset[7])
@@ -133,7 +163,7 @@ def CustomScript(Offset):
             continue;
 
     while True:
-        print("Press number you want change and Enter-Key. (Except for 1, 6, 7.)\nPress 'e' when you finish your selection.")
+        print("Press number you want change and Enter-Key. (Except for 2.) \nPress 'e' when you finish your selection.")
         arr = np.empty([0])
         while True:
             n = input('Enter:')
@@ -149,14 +179,18 @@ def CustomScript(Offset):
                 arr = np.r_[arr,add]
 
         for i in list(arr):
-            if i == 2.0:
-                Priority = CheckValue(fun.AddBlockID())
+            if i == 1.0:
+                Priority = CheckValue(fun.AddPriority())
             elif i == 3.0:
                 Observer = CheckValue(fun.AddObserver())
             elif i == 4.0:
                 ObjectName = CheckValue(fun.AddObjectName())
             elif i == 5.0:
                 ObjectType = CheckValue(fun.AddObjectType())
+            elif i == 6.0:
+                RA = CheckValue(fun.AddRA())
+            elif i == 7.0:
+                DEC = CheckValue(fun.AddDEC())
             elif i == 8.0:
                 RAoffset = CheckValue(fun.AddRAoffset())
             elif i == 9.0:
@@ -186,7 +220,7 @@ def CustomScript(Offset):
             else:
                 pass;
 
-        print('[Latest values @Standard]')
+        print('[ Latest values @',OffsetName,']')
         print('**********************************')
         print('1.  Priority         :',Priority)
         print('2.  BlockID          :',BlockID)

@@ -1,5 +1,0 @@
-Priority,BlockID,Observer,ObjectName,ObjectType,RA,DEC,RAoffset,DECoffset,ROToffset,Filter1,Filter2,DitherType,DitherRadius,DitherPhase,DitherTotal,Images,IntegrationTime,Comment1,Comment2
-1,P00001,OU,ObjectName,ObjectType,2:30:40,3:09:40,0.0,0.0,0.0,Open,H,None,0.0,0.0,0,1,10.00,"""""",""""""
-2,P00002,OU,ObjectName,ObjectType,1:10:10,2:20:20,0.0,0.0,0.0,Open,H,None,0.0,0.0,0,1,10.00,"""""",""""""
-1,P00003,OU,ObjectName,ObjectType,4:40:40,5:50:50,0.0,0.0,0.0,Open,H,None,0.0,0.0,0,1,10.00,"""""",""""""
-5,P00004,OU,ObjectName,ObjectType,6:35:00,1:00:00,0.0,0.0,0.0,Open,H,None,0.0,0.0,0,1,10.00,"""""",""""""

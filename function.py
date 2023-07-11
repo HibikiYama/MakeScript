@@ -97,32 +97,62 @@ def AddDitherType():
 
 def AddDitherRadius():
     print('DitherRadius is ...')
-    DitherRadius = input('Enter:')
-    print('')
+    while True:
+        DitherRadius = input('Enter:')
+        if int(DitherRadius) >=0:
+            print('')
+            break;
+        else :
+            print('Please set a value greater than or equal to 0.')
+            continue;
     return DitherRadius
 
 def AddDitherPhase():
     print('DitherPhase is ...')
-    DitherPhase = input('Enter:')
-    print('')
+    while True:
+        DitherPhase = input('Enter:')
+        if int(DitherPhase) > 0:
+            print('')
+            break;
+        else :
+            print('Please set a value greater than or equal to 1.')
+            continue;
     return DitherPhase
 
 def AddDitherTotal():
     print('DitherTotal is ...')
-    DitherTotal = input('Enter:')
-    print('')
+    while True:
+        DitherTotal = input('Enter:')
+        if int(DitherTotal) > 0:
+            print('')
+            break;
+        else :
+            print('Please set a value greater than or equal to 1.')
+            continue;
     return DitherTotal
 
 def AddImages():
     print('Images is ...')
-    Images = input('Enter:')
-    print('')
+    while True:
+        Images = input('Enter:')
+        if int(Images) > 0:
+            print('')
+            break;
+        else :
+            print('Please set a value greater than or equal to 1.')
+            continue;
     return Images
 
 def AddIntegrationTime():
     print('IntegrationTime is ...')
-    IntegrationTime = input('Enter:')
-    print('')
+    while True:
+        IntegrationTime = input('Enter:')
+        if int(IntegrationTime) > 0:
+            print('')
+            break;
+        else :
+            print('Please set a value greater than or equal to 1.')
+            continue;
     return IntegrationTime
 
 def AddComment1():
@@ -131,7 +161,7 @@ def AddComment1():
     print('')
     return Comment1
 
-def AddComment1():
+def AddComment2():
     print('Comment2 is ...')
     Comment2 = input('Enter:')
     print('')
