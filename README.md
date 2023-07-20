@@ -58,7 +58,7 @@
 - ## offset (.txt, .list, .csv)  
 Offset/ 以下に置いておく。観測scriptを作成する際に使用するoffset値の入ったファイル。観測するターゲットのタイプに合わせて作っておくと便利。デフォルトではList/ にstandard.txtとbulge.txtが入っている。
 - ## List (.txt, .list, .csv)
-List/ 以下に置いておく。観測targetの情報が入ったファイル。現在（2023/7/5~）はtarget名、RA or l、DEC or bに対応。（ローテーターのoffsetに対応予定）
+List/ 以下に置いておく。観測targetの情報が入ったファイル。現在（2023/7/5~）はtarget名、RA or l、DEC or bに対応。
 ```bash
 GB1 3.919806 2.706028
 GB2 2.718806 2.706028
@@ -75,7 +75,8 @@ GB4 0.316806 2.706028
 # Usage
 
 # Note
-
+- ## ROToffset
+ローテーターのオフセットは引数に-lbをつけると検出器が銀河系座標に、-rdをつけると検出器が赤道座標に沿うように自動で数値が入る。
 # Author
 
 * Hibiki Yama（山 響）
