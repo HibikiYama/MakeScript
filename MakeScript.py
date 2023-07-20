@@ -1,6 +1,7 @@
 import numpy as np
 import csv
 import function as fun
+import FitRotator as fr
 import sys
 import re
 import subprocess
@@ -12,7 +13,7 @@ argv = sys.argv
 
 header = np.array(['Priority', 'BlockID', 'Observer', 'ObjectName', 'ObjectType', 'RA', 'DEC', 'RAoffset', 'DECoffset', 'ROToffset', 'Filter1', 'Filter2', 'DitherType', 'DitherRadius', 'DitherPhase', 'DitherTotal', 'Images', 'IntegrationTime', 'Comment1', 'Comment2'])
 
-ROT = 45.657
+ROT = 48
 ############################################################
 
 def CheckValue(func):
@@ -429,7 +430,10 @@ else:
 
                                 with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '') as f:
 
-                                    ObjectName = row[0]
+                                    if OffsetName == 'bulge.txt':
+                                        ObjectName = 'GB' + row[0]
+                                    else :
+                                        ObjectName = row[0]
 
                                     for k in range(0,len(argv)):
                                         if argv[k] == '-lb':
@@ -437,6 +441,8 @@ else:
                                             equatorial_coord = galactic_coord.transform_to('icrs')
                                             RA = equatorial_coord.ra.to_string(unit=u.hour, sep=':', precision=2)
                                             DEC = equatorial_coord.dec.to_string(unit=u.degree, sep=':', precision=2)
+                                            (best_rot, rot_arr, inners) = fr.search_best_rot(equatorial_coord)
+                                            ROToffset = round(3600*(-best_rot+ROT),1)
 
                                         elif argv[k] == '-rd':
                                             if ':' in row[1] and row[2]:
@@ -473,9 +479,9 @@ else:
                                             else:
                                                 RA = deg2HMS(ra= float(row[1]))  #degree
                                                 DEC = deg2HMS(dec= float(row[2]))  #degree
+
+                                            ROToffset = round(3600*ROT,1)
                                         
-                                
-                                    #ROToffset = round(float(row[4]) - ROToffset,1)
                                     #Filter1 = row[5]
                                     #Filter2 = row[6]
                                     #Images = row[6]
@@ -485,13 +491,12 @@ else:
                                     BlockID = 'P'+n_zero
                                     Observer = Offset[2]
                                     #ObjectName = Offset[3]
-                                    #ObjectName = 'gb'+str(n)
                                     ObjectType = Offset[4]
                                     #RA = Offset[5]
                                     #DEC = Offset[6]
                                     RAoffset = Offset[7]
                                     DECoffset = Offset[8]
-                                    ROToffset = Offset[9]
+                                    # ROToffset = Offset[9]
                                     Filter1 = Offset[10]
                                     Filter2 = Offset[11]
                                     DitherType = Offset[12]
@@ -531,8 +536,10 @@ else:
 #########################################################################
 ###########################　Read values from a list. ###################
 #########################################################################
-
-                            ObjectName = row[0]
+                            if OffsetName == 'bulge.txt':
+                                ObjectName = 'GB' + row[0]
+                            else :
+                                ObjectName = row[0]
                             
                             for k in range(0,len(argv)):
                                 if argv[k] == '-lb':
@@ -540,6 +547,8 @@ else:
                                     equatorial_coord = galactic_coord.transform_to('icrs')
                                     RA = equatorial_coord.ra.to_string(unit=u.hour, sep=':', precision=2)
                                     DEC = equatorial_coord.dec.to_string(unit=u.degree, sep=':', precision=2)
+                                    (best_rot, rot_arr, inners) = fr.search_best_rot(equatorial_coord)
+                                    ROToffset = round(3600*(-best_rot+ROT),1)
 
                                 elif argv[k] == '-rd':
                                     if ':' in row[1] and row[2]:
@@ -577,13 +586,16 @@ else:
                                         RA = deg2HMS(ra= float(row[1]))  #degree
                                         DEC = deg2HMS(dec= float(row[2]))  #degree
 
-                            #ROToffset = round(float(row[4]) - ROToffset,1)
+                                    ROToffset = round(3600*ROT,1)
+
                             # Filter1 = row[5]
                             # Filter2 = row[6]
                             # Images = row[6]
                             # IntegrationTime = row[7]
                             #Comment1 = row[]
                             #Comment2 = row[]
+
+                            
 #########################################################################
 #########################################################################
 
@@ -596,13 +608,12 @@ else:
                             BlockID = 'P'+n_zero
                             Observer = Offset[2]
                             #ObjectName = Offset[3]
-                            #ObjectName = 'gb'+str(n)
                             ObjectType = Offset[4]
                             #RA = Offset[5]
                             #DEC = Offset[6]
                             RAoffset = Offset[7]
                             DECoffset = Offset[8]
-                            ROToffset = Offset[9]
+                            # ROToffset = Offset[9]
                             Filter1 = Offset[10]
                             Filter2 = Offset[11]
                             DitherType = Offset[12]
