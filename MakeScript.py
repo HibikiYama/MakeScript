@@ -1,10 +1,12 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import csv
 import function as fun
 import FitRotator as fr
 import sys
 import re
 import subprocess
+import math
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
@@ -267,35 +269,35 @@ def CustomScript(Offset):
     return print('Added new target!\n')
 
 def deg2HMS(ra='', dec='', i=False):
-  RA, DEC, rs, ds = '', '', '', ''
-  if dec:
-    if str(dec)[0] == '-':
-      ds, dec = '-', abs(dec)
-    deg = int(dec)
-    decM = abs(int((dec-deg)*60))
-    if i:
-      decS = int((abs((dec-deg)*60)-decM)*60)
-    else:
-      decS = (abs((dec-deg)*60)-decM)*60
-      decS = round(decS,1)
-    DEC = '{0}{1}:{2}:{3}'.format(ds, deg, decM, decS)
+    RA, DEC, rs, ds = '', '', '', ''
+    if dec:
+        if str(dec)[0] == '-':
+            ds, dec = '-', abs(dec)
+            deg = int(dec)
+            decM = abs(int((dec-deg)*60))
+        if i:
+            decS = int((abs((dec-deg)*60)-decM)*60)
+        else:
+            decS = (abs((dec-deg)*60)-decM)*60
+            decS = round(decS,1)
+            DEC = '{0}{1}:{2}:{3}'.format(ds, deg, decM, decS)
 
-  if ra:
-    if str(ra)[0] == '-':
-      rs, ra = '-', abs(ra)
-    raH = int(ra/15)
-    raM = int(((ra/15)-raH)*60)
-    if i:
-      raS = int(((((ra/15)-raH)*60)-raM)*60)
-    else:
-      raS = ((((ra/15)-raH)*60)-raM)*60
-      raS = round(raS,1)
-    RA = '{0}{1}:{2}:{3}'.format(rs, raH, raM, raS)
+    if ra:
+        if str(ra)[0] == '-':
+            rs, ra = '-', abs(ra)
+            raH = int(ra/15)
+            raM = int(((ra/15)-raH)*60)
+        if i:
+            raS = int(((((ra/15)-raH)*60)-raM)*60)
+        else:
+            raS = ((((ra/15)-raH)*60)-raM)*60
+            raS = round(raS,1)
+            RA = '{0}{1}:{2}:{3}'.format(rs, raH, raM, raS)
 
-  if ra and dec:
-    return (RA, DEC)
-  else:
-    return RA or DEC
+    if ra and dec:
+        return (RA, DEC)
+    else:
+        return RA or DEC
 
 
 
@@ -320,7 +322,7 @@ if len(argv) < 4:
         print('')
         print('Press y (yes) or n (no).')
         yn = fun.YesNo()
-    
+
     if yn == 'y':
         print('\nCustom-Making mode start!\n')
         ScriptName = CheckValue(fun.MakeScriptName())
@@ -418,26 +420,32 @@ else:
                         list = f.readlines()
                         numbers = len(list)
 
-
                         n = 0
-                        for row in list:
-                            if not row.isspace():
+                        for i, row in enumerate(list):
+                            row_tmp = row.rstrip('\n')
+                            row_tmp = re.split(',', row)
+                            if i == 0 and row_tmp[0] == '\ufeffObserver':
+                                continue
+
+                            elif row_tmp[0] == '':
+                                continue
+
+                            elif not row.isspace():
                                 row = row.rstrip('\n')
-                                row = re.split(',|\t| |  ', row)
+                                row = re.split(',', row)
                                 n = n+1
                                 ns = str(n)
                                 n_zero = ns.zfill(5)
 
                                 with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '') as f:
 
-                                    if OffsetName == 'bulge.txt':
-                                        ObjectName = 'GB' + row[0]
-                                    else :
-                                        ObjectName = row[0]
+                                    Observer = row[0]
+
+                                    ObjectType = row[2]
 
                                     for k in range(0,len(argv)):
                                         if argv[k] == '-lb':
-                                            galactic_coord = SkyCoord(l=float(row[1])*u.degree, b=float(row[2])*u.degree, frame='galactic')
+                                            galactic_coord = SkyCoord(l=float(row[3])*u.degree, b=float(row[4])*u.degree, frame='galactic')
                                             equatorial_coord = galactic_coord.transform_to('icrs')
                                             RA = equatorial_coord.ra.to_string(unit=u.hour, sep=':', precision=2)
                                             DEC = equatorial_coord.dec.to_string(unit=u.degree, sep=':', precision=2)
@@ -445,8 +453,8 @@ else:
                                             ROToffset = round(3600*(-best_rot+ROT),1)
 
                                         elif argv[k] == '-rd':
-                                            if ':' in row[1] and row[2]:
-                                                RA = row[1]  #h:m:s
+                                            if ':' in row[3] and row[4]:
+                                                RA = row[3]  #* h:m:s
                                                 RA = re.split(':',RA)
                                                 RAh = RA[0]
                                                 if str(RAh)[0] == '-':
@@ -460,53 +468,80 @@ else:
                                                     RAm = RA[1]
                                                     RAs = round(float(RA[2]),1)
                                                     RA = '{0}:{1}:{2}'.format(RAh, RAm, RAs)
-                                            
-                                                DEC = row[2]  #h:m:s
-                                                DEC = re.split(':',DEC)
-                                                DECh = DEC[0]
-                                                if str(DECh)[0] == '-':
-                                                    rs = str(DECh)[0]
-                                                    DECh = int(abs(float(DECh)))
-                                                    DECm = DEC[1]
-                                                    DECs = round(float(DEC[2]),1)
-                                                    DEC = '{0}{1}:{2}:{3}'.format(rs, DECh, DECm, DECs)
-                                                else:
-                                                    DECh = int(abs(float(DECh)))
-                                                    DECm = DEC[1]
-                                                    DECs = round(float(DEC[2]),1)
-                                                    DEC = '{0}:{1}:{2}'.format(DECh, DECm, DECs)
-                                            
-                                            else:
-                                                RA = deg2HMS(ra= float(row[1]))  #degree
-                                                DEC = deg2HMS(dec= float(row[2]))  #degree
 
-                                            ROToffset = round(3600*ROT,1)
-                                        
-                                    #Filter1 = row[5]
-                                    #Filter2 = row[6]
-                                    #Images = row[6]
-                                    #IntegrationTime = row[7]
+                                                DEC = row[4]  #* d:m:s
+                                                DEC = re.split(':',DEC)
+                                                DECd = DEC[0]
+                                                if str(DECd)[0] == '-':
+                                                    rs = str(DECd)[0]
+                                                    DECd = int(abs(float(DECd)))
+                                                    DECm = DEC[1]
+                                                    DECs = round(float(DEC[2]),1)
+                                                    DEC = '{0}{1}:{2}:{3}'.format(rs, DECd, DECm, DECs)
+                                                else:
+                                                    DECd = int(abs(float(DECd)))
+                                                    DECm = DEC[1]
+                                                    DECs = round(float(DEC[2]),1)
+                                                    DEC = '{0}:{1}:{2}'.format(DECd, DECm, DECs)
+
+                                            # else:
+                                            #     RA = deg2HMS(ra= float(row[3]))  #degree
+                                            #     DEC = deg2HMS(dec= float(row[4]))  #degree
+
+                                    RAoffset = row[5]
+                                    DECoffset = row[6]
+
+                                    if row[1] == 'All-sky-grid':
+                                        closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
+                                        ObjectName = f'field{int(closest_object[0][0])}'
+                                        RA = closest_object[0][1]
+                                        DEC = closest_object[0][2]
+                                        ROToffset = round(3600*ROT,1)
+                                        fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
+
+                                    elif row[1] == 'Bulge-grid':
+                                        closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
+                                        ObjectName = f'GB{int(closest_object[0][0])}'
+                                        RA = closest_object[0][1]
+                                        DEC = closest_object[0][2]
+                                        ROToffset = closest_object[0][3]
+                                        fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
+
+                                    else :
+                                        ObjectName = row[1]
+                                        ROToffset = round(3600*ROT,1)
+
+                                    Filter1 = row[7]
+                                    Filter2 = row[8]
+                                    DitherType = row[9]
+                                    DitherRadius = row[10]
+                                    DitherPhase = row[11]
+                                    DitherTotal = row[12]
+                                    Images = row[13]
+                                    IntegrationTime = 0.1*math.floor(10*float(row[14]))
+                                    Comment1 = row[15]
+                                    Comment2 = row[16]
 
                                     Priority = Offset[0]
                                     BlockID = 'P'+n_zero
-                                    Observer = Offset[2]
+                                    # Observer = Offset[2]
                                     #ObjectName = Offset[3]
-                                    ObjectType = Offset[4]
+                                    # ObjectType = Offset[4]
                                     #RA = Offset[5]
                                     #DEC = Offset[6]
-                                    RAoffset = Offset[7]
-                                    DECoffset = Offset[8]
+                                    # RAoffset = Offset[7]
+                                    # DECoffset = Offset[8]
                                     # ROToffset = Offset[9]
-                                    Filter1 = Offset[10]
-                                    Filter2 = Offset[11]
-                                    DitherType = Offset[12]
-                                    DitherRadius = Offset[13]
-                                    DitherPhase = Offset[14]
-                                    DitherTotal = Offset[15]
-                                    Images = Offset[16]
-                                    IntegrationTime = Offset[17]
-                                    Comment1 = Offset[18]
-                                    Comment2 = Offset[19]
+                                    # Filter1 = Offset[10]
+                                    # Filter2 = Offset[11]
+                                    # DitherType = Offset[12]
+                                    # DitherRadius = Offset[13]
+                                    # DitherPhase = Offset[14]
+                                    # DitherTotal = Offset[15]
+                                    # Images = Offset[16]
+                                    # IntegrationTime = Offset[17]
+                                    # Comment1 = Offset[18]
+                                    # Comment2 = Offset[19]
 
                                     writer = csv.writer(f)
                                     writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
@@ -525,10 +560,18 @@ else:
                     numbers = len(list)
 
                     n = 0
-                    for row in list:
-                        if not row.isspace():
+                    for i, row in enumerate(list):
+                        row_tmp = row.rstrip('\n')
+                        row_tmp = re.split(',', row)
+                        if i == 0 and row_tmp[0] == '\ufeffObserver':
+                            continue
+
+                        elif row_tmp[0] == '':
+                            continue
+
+                        elif not row.isspace():
                             row = row.rstrip('\n')
-                            row = re.split(',|\t| |  ', row)
+                            row = re.split(',', row)
                             n = n+1
                             ns = str(n)
                             n_zero = ns.zfill(5)
@@ -536,14 +579,18 @@ else:
 #########################################################################
 ###########################　Read values from a list. ###################
 #########################################################################
+                            Observer = row[0]
+
                             if OffsetName == 'bulge.txt':
-                                ObjectName = 'GB' + row[0]
+                                ObjectName = 'GB' + row[1]
                             else :
-                                ObjectName = row[0]
-                            
+                                ObjectName = row[1]
+
+                            ObjectType = row[2]
+
                             for k in range(0,len(argv)):
                                 if argv[k] == '-lb':
-                                    galactic_coord = SkyCoord(l=float(row[1])*u.degree, b=float(row[2])*u.degree, frame='galactic')
+                                    galactic_coord = SkyCoord(l=float(row[3])*u.degree, b=float(row[4])*u.degree, frame='galactic')
                                     equatorial_coord = galactic_coord.transform_to('icrs')
                                     RA = equatorial_coord.ra.to_string(unit=u.hour, sep=':', precision=2)
                                     DEC = equatorial_coord.dec.to_string(unit=u.degree, sep=':', precision=2)
@@ -551,8 +598,8 @@ else:
                                     ROToffset = round(3600*(-best_rot+ROT),1)
 
                                 elif argv[k] == '-rd':
-                                    if ':' in row[1] and row[2]:
-                                        RA = row[1]  #h:m:s
+                                    if ':' in row[3] and row[4]:
+                                        RA = row[3]  #h:m:s
                                         RA = re.split(':',RA)
                                         RAh = RA[0]
                                         if str(RAh)[0] == '-':
@@ -566,36 +613,60 @@ else:
                                             RAm = RA[1]
                                             RAs = round(float(RA[2]),1)
                                             RA = '{0}:{1}:{2}'.format(RAh, RAm, RAs)
-                                    
-                                        DEC = row[2]  #h:m:s
+
+                                        DEC = row[4]  #d:m:s
                                         DEC = re.split(':',DEC)
-                                        DECh = DEC[0]
-                                        if str(DECh)[0] == '-':
-                                            rs = str(DECh)[0]
-                                            DECh = int(abs(float(DECh)))
+                                        DECd = DEC[0]
+                                        if str(DECd)[0] == '-':
+                                            rs = str(DECd)[0]
+                                            DECd = int(abs(float(DECd)))
                                             DECm = DEC[1]
                                             DECs = round(float(DEC[2]),1)
-                                            DEC = '{0}{1}:{2}:{3}'.format(rs, DECh, DECm, DECs)
+                                            DEC = '{0}{1}:{2}:{3}'.format(rs, DECd, DECm, DECs)
                                         else:
-                                            DECh = int(abs(float(DECh)))
+                                            DECd = int(abs(float(DECd)))
                                             DECm = DEC[1]
                                             DECs = round(float(DEC[2]),1)
-                                            DEC = '{0}:{1}:{2}'.format(DECh, DECm, DECs)
-                                    
-                                    else:
-                                        RA = deg2HMS(ra= float(row[1]))  #degree
-                                        DEC = deg2HMS(dec= float(row[2]))  #degree
+                                            DEC = '{0}:{1}:{2}'.format(DECd, DECm, DECs)
 
-                                    ROToffset = round(3600*ROT,1)
+                                    # else:
+                                    #     RA = deg2HMS(ra= float(row[3]))  #degree
+                                    #     DEC = deg2HMS(dec= float(row[4]))  #degree
 
-                            # Filter1 = row[5]
-                            # Filter2 = row[6]
-                            # Images = row[6]
-                            # IntegrationTime = row[7]
-                            #Comment1 = row[]
-                            #Comment2 = row[]
+                            RAoffset = row[5]
+                            DECoffset = row[6]
 
-                            
+                            if row[1] == 'All-sky-grid':
+                                closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
+                                ObjectName = f'field{int(closest_object[0][0])}'
+                                RA = closest_object[0][1]
+                                DEC = closest_object[0][2]
+                                ROToffset = round(3600*ROT,1)
+                                fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
+
+                            elif row[1] == 'Bulge-grid':
+                                closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
+                                ObjectName = f'GB{int(closest_object[0][0])}'
+                                RA = closest_object[0][1]
+                                DEC = closest_object[0][2]
+                                ROToffset = closest_object[0][3]
+                                fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
+
+                            else :
+                                ObjectName = row[1]
+                                ROToffset = round(3600*ROT,1)
+
+                            Filter1 = row[7]
+                            Filter2 = row[8]
+                            DitherType = row[9]
+                            DitherRadius = row[10]
+                            DitherPhase = row[11]
+                            DitherTotal = row[12]
+                            Images = row[13]
+                            IntegrationTime = 0.1*math.floor(10*float(row[14]))
+                            Comment1 = row[15]
+                            Comment2 = row[16]
+
 #########################################################################
 #########################################################################
 
@@ -606,24 +677,24 @@ else:
 
                             Priority = Offset[0]
                             BlockID = 'P'+n_zero
-                            Observer = Offset[2]
+                            # Observer = Offset[2]
                             #ObjectName = Offset[3]
-                            ObjectType = Offset[4]
+                            # ObjectType = Offset[4]
                             #RA = Offset[5]
                             #DEC = Offset[6]
-                            RAoffset = Offset[7]
-                            DECoffset = Offset[8]
+                            # RAoffset = Offset[7]
+                            # DECoffset = Offset[8]
                             # ROToffset = Offset[9]
-                            Filter1 = Offset[10]
-                            Filter2 = Offset[11]
-                            DitherType = Offset[12]
-                            DitherRadius = Offset[13]
-                            DitherPhase = Offset[14]
-                            DitherTotal = Offset[15]
-                            Images = Offset[16]
-                            IntegrationTime = Offset[17]
-                            Comment1 = Offset[18]
-                            Comment2 = Offset[19]
+                            # Filter1 = Offset[10]
+                            # Filter2 = Offset[11]
+                            # DitherType = Offset[12]
+                            # DitherRadius = Offset[13]
+                            # DitherPhase = Offset[14]
+                            # DitherTotal = Offset[15]
+                            # Images = Offset[16]
+                            # IntegrationTime = Offset[17]
+                            # Comment1 = Offset[18]
+                            # Comment2 = Offset[19]
 #########################################################################
 #########################################################################
 

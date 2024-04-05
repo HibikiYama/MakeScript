@@ -1,3 +1,5 @@
+import numpy as np
+import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 import function as fun
@@ -53,7 +55,6 @@ def deg_to_dms(angle):
 def find_closest_object(ra, dec, csv_path, num_closest=20):
     # CSVを読み込む
     df = pd.read_csv(csv_path)
-    
     # RA, DECを角度に変換
     df['RA'] = df['RA'].apply(hms_to_deg)
     df['DEC'] = df['DEC'].apply(dms_to_deg)
@@ -86,6 +87,8 @@ def find_closest_object(ra, dec, csv_path, num_closest=20):
     closest_objects.to_csv("Script/"+newname+".csv",na_rep='None',index=False)
 
     return closest_objects_copy[['ObjectName', 'RA', 'DEC', 'dist']][:20]
+
+
 
 if len(argv) < 7:
     print('Please select script and set RA and DEC!!\n(eg. python SelectScript.py -script script.csv -RA 2:30:40 -DEC -10:20:30)')
