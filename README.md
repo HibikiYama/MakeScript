@@ -9,18 +9,18 @@
  Observer        : 観測者
  ObjectName      : ターゲットの名
  ObjectType      : ターゲットのタイプ
- RA              : ターゲットのRA
- DEC             : ターゲットのDEC
- RAoffset        : RAにオフセットを加える
- DECoffset       : DECにオフセットを加える
+ RA              : ターゲットのRA (h:m:s)
+ DEC             : ターゲットのDEC (d:m:s)
+ RAoffset        : RAにオフセットを加える (")
+ DECoffset       : DECにオフセットを加える (")
  ROToffset       : ローテーターの回転角にオフセットを加える
  Filter1         : Filter1を指定        # Filter1    : Open, Z, NB, Dark
  Filter2         : Filter2を指定        # Filter2    : Open, Y, J, H
  DitherType      : Ditheringの種類を指定 # DitherType : None, Circle, Random
- DitherRadius    : Ditheringの半径を指定
+ DitherRadius    : Ditheringの半径を指定 (")
  DitherPhase     : Ditheringの開始角度を指定（Circle Ditheringのみ）
  DitherTotal     : Ditheringの回数を指定 (1以上、NINT=DitherTotal*Images)
- Images          : 撮影枚数を指定
+ Images          : 撮影枚数を指定 (1以上)
  IntegrationTime : 露光時間を指定
  Comment1        : コメント欄1
  Comment2        : コメント欄2
@@ -35,12 +35,12 @@
   python MakeScript.py -offset standard.txt  
   ```
   - **Auto-Making mode** （-offset offset_name -list list_name -lb or -rd）  
-  引数にoffsetとして使用するファイルと事前に準備したtargetの情報が入ったファイルを指定する。また、targetが銀河系座標なら-lb、赤道座標なら-rdを引数につけて実行。あとは**自動でscriptを作成**する。
+  引数にoffsetとして使用するファイルと事前に準備したtargetの情報が入ったファイルを指定する（standard.txtを推奨）。また、targetが銀河系座標なら-lb、赤道座標なら-rdを引数につけて実行。あとは**自動でscriptを作成**する。*ver1.4~ はtargetの情報が入ったファイルとして観測提案スクリプトを指定。基本的には-rdで実行。またobjectNameがAll-sky-gridもしくはBulge-gridの場合、各targetの位置と最適gird（RAoffset, DECoffsetも考慮）が表示されるので、観測者は問題がないか確認してEnterをし次に進む。
   ```bash
   python MakeScript.py -offset standard.txt -list testlist.txt -rd 
   ```
     - **Auto-Adding mode** （-offset offset_name -list list_name -add script_name -lb or -rd）  
-    Auto-Making modeのオプションモード。引数に既存のscriptを指定すると自動で新たな観測ターゲットを追加する。
+    Auto-Making modeのオプションモード。引数に既存のscriptを指定すると自動で新たな観測ターゲットを追加する。基本的な機能はAuto-Making modeを参照。
     ```bash  
     python MakeScript.py -offset standard.txt -list testlist.txt -add obslist.csv -rd
     ```
@@ -58,7 +58,7 @@
 - ## offset (.txt, .list, .csv)  
 Offset/ 以下に置いておく。観測scriptを作成する際に使用するoffset値の入ったファイル。観測するターゲットのタイプに合わせて作っておくと便利。デフォルトではList/ にstandard.txtとbulge.txtが入っている。
 - ## List (.txt, .list, .csv)
-List/ 以下に置いておく。観測targetの情報が入ったファイル。現在（2023/7/5~）はtarget名、RA or l、DEC or bに対応。
+List/ 以下に置いておく。観測targetの情報が入ったファイル。ver1.4~ は観測提案スクリプトに対応。
 ```bash
 GB1 3.919806 2.706028
 GB2 2.718806 2.706028
