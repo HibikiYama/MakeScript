@@ -364,7 +364,7 @@ def plot_closest_objects_all_sky(Object_name, RA_target, DEC_target, RA_closest,
     plt.tight_layout()
     plt.show(block=False)
 
-    response = input("After confirming your position, press enter to continue: \n")
+    response = input("After confirming the target and the optimal grid positions, press enter to continue: \n")
     plt.close(fig)
 
 def plot_closest_objects_bulge(Object_name, RA_target, DEC_target, RA_closest, DEC_closest, RAoffset, DECoffset, rot):
@@ -476,5 +476,5 @@ def plot_closest_objects_bulge(Object_name, RA_target, DEC_target, RA_closest, D
     plt.tight_layout()
     plt.show(block=False)
 
-    response = input("After confirming your position, press enter to continue: \n")
+    response = input("After confirming the target and the optimal grid positions, press enter to continue: \n")
     plt.close(fig)
