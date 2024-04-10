@@ -38,12 +38,12 @@
   **観測提案スクリプトを観測スクリプトに変換する際はこのmodeを使用。**  
   引数にoffsetとして使用するファイルと事前に準備したtargetの情報が入ったファイルを指定する（standard.txtを推奨）。また、targetが銀河系座標なら-lb、赤道座標なら-rdを引数につけて実行。あとは**自動でscriptを作成**する。*ver1.4~ はtargetの情報が入ったファイルとして観測提案スクリプトを指定。基本的には-rdで実行。またobjectNameがAll-sky-gridもしくはBulge-gridの場合、各targetの位置と最適gird（RAoffset, DECoffsetも考慮）が表示されるので、観測者は問題がないか確認してEnterをし次に進む。
   ```bash
-  python MakeScript.py -offset standard.txt -list testlist.txt -rd 
+  python MakeScript.py -offset standard.txt -list 観測提案スクリプト.csv -rd 
   ```
     - **Auto-Adding mode** （-offset offset_name -list list_name -add script_name -lb or -rd）  
-    Auto-Making modeのオプションモード。引数に既存のscriptを指定すると自動で新たな観測ターゲットを追加する。基本的な機能はAuto-Making modeを参照。
+    Auto-Making modeのオプションモード。引数-addの後に既存のscriptを指定すると自動で新たな観測ターゲット（-listで指定）を追加する。基本的な機能はAuto-Making modeを参照。
     ```bash  
-    python MakeScript.py -offset standard.txt -list testlist.txt -add obslist.csv -rd
+    python MakeScript.py -offset standard.txt -list 観測提案スクリプト.csv -add 観測スクリプト.csv -rd
     ```
 
 # SelectScript.py
@@ -57,9 +57,9 @@
 
 # Required files
 - ## offset (.txt, .list, .csv)  
-Offset/ 以下に置いておく。観測scriptを作成する際に使用するoffset値の入ったファイル。観測するターゲットのタイプに合わせて作っておくと便利。デフォルトではList/ にstandard.txtとbulge.txtが入っている。
+Offset/ 以下に置いておく。観測scriptを作成する際に使用するoffset値の入ったファイル（**観測スクリプトのdefaultのようなもので、実際の観測targetの情報ではないことに注意。**）。観測するターゲットのタイプに合わせて作っておくと便利。デフォルトではList/ にstandard.txtとbulge.txtが入っている。
 - ## List (.txt, .list, .csv)
-List/ 以下に置いておく。観測targetの情報が入ったファイル。ver1.4~ は観測提案スクリプトに対応。
+List/ 以下に置いておく。観測targetの情報が入ったファイル。ver1.4~ では観測提案スクリプトのことである。
 ```bash
 GB1 3.919806 2.706028
 GB2 2.718806 2.706028
