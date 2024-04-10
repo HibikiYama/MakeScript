@@ -427,6 +427,9 @@ else:
                             if i == 0 and row_tmp[0] == '\ufeffObserver':
                                 continue
 
+                            elif i == 0 and row_tmp[0] == 'Observer':
+                                continue
+
                             elif row_tmp[0] == '':
                                 continue
 
@@ -564,6 +567,9 @@ else:
                         row_tmp = row.rstrip('\n')
                         row_tmp = re.split(',', row)
                         if i == 0 and row_tmp[0] == '\ufeffObserver':
+                            continue
+
+                        elif i == 0 and row_tmp[0] == 'Observer':
                             continue
 
                         elif row_tmp[0] == '':
