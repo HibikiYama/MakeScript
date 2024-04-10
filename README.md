@@ -34,7 +34,8 @@
   ```bash
   python MakeScript.py -offset standard.txt  
   ```
-  - **Auto-Making mode** （-offset offset_name -list list_name -lb or -rd）  
+  - **Auto-Making mode** （-offset offset_name -list list_name -lb or -rd）
+  **観測提案スクリプトを観測スクリプトに変換する際はこのmodeを使用。**
   引数にoffsetとして使用するファイルと事前に準備したtargetの情報が入ったファイルを指定する（standard.txtを推奨）。また、targetが銀河系座標なら-lb、赤道座標なら-rdを引数につけて実行。あとは**自動でscriptを作成**する。*ver1.4~ はtargetの情報が入ったファイルとして観測提案スクリプトを指定。基本的には-rdで実行。またobjectNameがAll-sky-gridもしくはBulge-gridの場合、各targetの位置と最適gird（RAoffset, DECoffsetも考慮）が表示されるので、観測者は問題がないか確認してEnterをし次に進む。
   ```bash
   python MakeScript.py -offset standard.txt -list testlist.txt -rd 
