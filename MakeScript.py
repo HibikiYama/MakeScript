@@ -424,10 +424,10 @@ else:
                         for i, row in enumerate(list):
                             row_tmp = row.rstrip('\n')
                             row_tmp = re.split(',', row)
-                            if i == 0 and row_tmp[0] == '\ufeffObserver':
+                            if i == 0 and row_tmp[0] == '\ufeffObserver(PI institute)':
                                 continue
 
-                            elif i == 0 and row_tmp[0] == 'Observer':
+                            elif i == 0 and row_tmp[0] == 'Observer(PI institute)':
                                 continue
 
                             elif row_tmp[0] == '':
@@ -566,10 +566,10 @@ else:
                     for i, row in enumerate(list):
                         row_tmp = row.rstrip('\n')
                         row_tmp = re.split(',', row)
-                        if i == 0 and row_tmp[0] == '\ufeffObserver':
+                        if i == 0 and row_tmp[0] == '\ufeffObserver(PI institute)':
                             continue
 
-                        elif i == 0 and row_tmp[0] == 'Observer':
+                        elif i == 0 and row_tmp[0] == 'Observer(PI institute)':
                             continue
 
                         elif row_tmp[0] == '':

@@ -6,7 +6,7 @@
 ```
  Priority        : 0から順に数字が小さいほど優先される
  BlockID         : 観測ターゲットのID（現在はテキトーに連番でつく）
- Observer        : 観測者
+ Observer        : 観測提案者の所属機関
  ObjectName      : ターゲットの名
  ObjectType      : ターゲットのタイプ
  RA              : ターゲットのRA (h:m:s)
@@ -22,8 +22,8 @@
  DitherTotal     : Ditheringの回数を指定 (1以上、NINT=DitherTotal*Images)
  Images          : 撮影枚数を指定 (1以上)
  IntegrationTime : 露光時間を指定
- Comment1        : コメント欄1
- Comment2        : コメント欄2
+ Comment1        : コメント欄1（現在はPIの名前が入る）
+ Comment2        : コメント欄2（現在は観測targetの名前が入る）
  ```
 
 - ## How to use  
