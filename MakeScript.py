@@ -416,7 +416,7 @@ else:
                     ScriptName = argv[j+1]
                     ScriptName = ScriptName.split('.')
                     print('Add to',"'",ScriptName[0],"'.")
-                    with open('List/'+listname) as f:
+                    with open('List/'+listname, encoding='utf-8') as f:
                         list = f.readlines()
                         numbers = len(list)
 
@@ -440,7 +440,7 @@ else:
                                 ns = str(n)
                                 n_zero = ns.zfill(5)
 
-                                with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '') as f:
+                                with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '', encoding='utf-8') as f:
 
                                     Observer = row[0]
 
@@ -555,10 +555,10 @@ else:
             print('New script name is',"'",ScriptName[0],"'.")
             command = ['rm','-rf', 'Script/'+ ScriptName[0]+'.csv']
             subprocess.call(command)
-            with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '') as F:
+            with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '', encoding='utf-8') as F:
                 writer = csv.writer(F)
                 writer.writerow(header)
-                with open('List/'+listname) as f:
+                with open('List/'+listname, encoding='utf-8') as f:
                     list = f.readlines()
                     numbers = len(list)
 
