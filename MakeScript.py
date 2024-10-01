@@ -424,10 +424,7 @@ else:
                         for i, row in enumerate(list):
                             row_tmp = row.rstrip('\n')
                             row_tmp = re.split(',', row)
-                            if i == 0 and row_tmp[0] == '\ufeffObserver(PI institute)':
-                                continue
-
-                            elif i == 0 and row_tmp[0] == 'Observer(PI institute)':
+                            if i == 0 and row_tmp[0] in ['\ufeffObserver(PI institute)', 'Observer(PI institute)']:
                                 continue
 
                             elif row_tmp[0] == '':
@@ -436,7 +433,7 @@ else:
                             elif not row.isspace():
                                 row = row.rstrip('\n')
                                 row = re.split(',', row)
-                                n = n+1
+                                n += 1
                                 ns = str(n)
                                 n_zero = ns.zfill(5)
 
@@ -491,28 +488,38 @@ else:
                                             #     RA = deg2HMS(ra= float(row[3]))  #degree
                                             #     DEC = deg2HMS(dec= float(row[4]))  #degree
 
-                                    RAoffset = row[5]
-                                    DECoffset = row[6]
+                                    try:
+                                        if row[1] == 'all_sky_grid':
+                                            closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
+                                            ObjectName = f'field{int(closest_object[0][0])}'
+                                            RA = closest_object[0][1]
+                                            DEC = closest_object[0][2]
+                                            RAoffset = '0'
+                                            DECoffset = '0'
+                                            ROToffset = round(3600*ROT,1)
+                                            fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
 
-                                    if row[1] == 'All-sky-grid':
-                                        closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
-                                        ObjectName = f'field{int(closest_object[0][0])}'
-                                        RA = closest_object[0][1]
-                                        DEC = closest_object[0][2]
-                                        ROToffset = round(3600*ROT,1)
-                                        fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
+                                        elif row[1] == 'bulge_grid':
+                                            closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
+                                            ObjectName = f'GB{int(closest_object[0][0])}'
+                                            RA = closest_object[0][1]
+                                            DEC = closest_object[0][2]
+                                            RAoffset = '0'
+                                            DECoffset = '0'
+                                            ROToffset = closest_object[0][3]
+                                            fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
 
-                                    elif row[1] == 'Bulge-grid':
-                                        closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
-                                        ObjectName = f'GB{int(closest_object[0][0])}'
-                                        RA = closest_object[0][1]
-                                        DEC = closest_object[0][2]
-                                        ROToffset = closest_object[0][3]
-                                        fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
-
-                                    else :
-                                        ObjectName = row[1]
-                                        ROToffset = round(3600*ROT,1)
+                                        elif row[1] == 'no_grid':
+                                            ObjectName = row[1]
+                                            RAoffset = row[5]
+                                            DECoffset = row[6]
+                                            ROToffset = round(3600*ROT,1)
+                                            fun.plot_closest_objects_nogrid(row[16], RA, DEC, RAoffset, DECoffset)
+                                    except Exception as e:
+                                        print(f"Unexpected error: {e}")
+                                        print(f'Please check line{i+1} in the proposal file.')
+                                        response = input("After confirming the error meesage, press enter to continue: \n")
+                                        continue
 
                                     Filter1 = row[7]
                                     Filter2 = row[8]
@@ -566,10 +573,7 @@ else:
                     for i, row in enumerate(list):
                         row_tmp = row.rstrip('\n')
                         row_tmp = re.split(',', row)
-                        if i == 0 and row_tmp[0] == '\ufeffObserver(PI institute)':
-                            continue
-
-                        elif i == 0 and row_tmp[0] == 'Observer(PI institute)':
+                        if i == 0 and row_tmp[0] in ['\ufeffObserver(PI institute)', 'Observer(PI institute)']:
                             continue
 
                         elif row_tmp[0] == '':
@@ -578,7 +582,7 @@ else:
                         elif not row.isspace():
                             row = row.rstrip('\n')
                             row = re.split(',', row)
-                            n = n+1
+                            n += 1
                             ns = str(n)
                             n_zero = ns.zfill(5)
 
@@ -639,28 +643,39 @@ else:
                                     #     RA = deg2HMS(ra= float(row[3]))  #degree
                                     #     DEC = deg2HMS(dec= float(row[4]))  #degree
 
-                            RAoffset = row[5]
-                            DECoffset = row[6]
+                            try:
+                                if row[1] == 'all_sky_grid':
+                                    closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
+                                    ObjectName = f'field{int(closest_object[0][0])}'
+                                    RA = closest_object[0][1]
+                                    DEC = closest_object[0][2]
+                                    RAoffset = '0'
+                                    DECoffset = '0'
+                                    ROToffset = round(3600*ROT,1)
+                                    fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
 
-                            if row[1] == 'All-sky-grid':
-                                closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
-                                ObjectName = f'field{int(closest_object[0][0])}'
-                                RA = closest_object[0][1]
-                                DEC = closest_object[0][2]
-                                ROToffset = round(3600*ROT,1)
-                                fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
+                                elif row[1] == 'bulge_grid':
+                                    closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
+                                    ObjectName = f'GB{int(closest_object[0][0])}'
+                                    RA = closest_object[0][1]
+                                    DEC = closest_object[0][2]
+                                    RAoffset = '0'
+                                    DECoffset = '0'
+                                    ROToffset = closest_object[0][3]
+                                    fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
 
-                            elif row[1] == 'Bulge-grid':
-                                closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
-                                ObjectName = f'GB{int(closest_object[0][0])}'
-                                RA = closest_object[0][1]
-                                DEC = closest_object[0][2]
-                                ROToffset = closest_object[0][3]
-                                fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
+                                elif row[1] == 'no_grid':
+                                    ObjectName = row[1]
+                                    RAoffset = row[5]
+                                    DECoffset = row[6]
+                                    ROToffset = round(3600*ROT,1)
+                                    fun.plot_closest_objects_nogrid(row[16], RA, DEC, RAoffset, DECoffset)
 
-                            else :
-                                ObjectName = row[1]
-                                ROToffset = round(3600*ROT,1)
+                            except Exception as e:
+                                print(f"Unexpected error: {e}")
+                                print(f'Please check line{i+1} in the proposal file.')
+                                response = input("After confirming the error meesage, press enter to continue: \n")
+                                continue
 
                             Filter1 = row[7]
                             Filter2 = row[8]
