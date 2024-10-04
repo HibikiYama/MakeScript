@@ -495,7 +495,12 @@ def plot_closest_objects_nogrid(Object_name, RA_target, DEC_target, RAoffset, DE
     else:
         ax.scatter(RA_target, DEC_target, color='red', label=Object_name, marker='*')
 
-    RA_det, DEC_det = RA_target+int(RAoffset)/3600, DEC_target+int(DECoffset)/3600
+    RAoffset = int(RAoffset)
+    DECoffset = int(DECoffset)
+
+    DEC_det = DEC_target+DECoffset/3600
+    RA_det = RA_target+RAoffset*calc_extend_ratio(np.abs(RAoffset),DEC_det)/3600
+
     rect_width = (n_pix*pix_scale)/3600 #[deg]
     rect_height = (n_pix*pix_scale)/3600 #[deg]
     gap_deg = gap/3600 #[deg]
@@ -559,11 +564,11 @@ def plot_closest_objects_nogrid(Object_name, RA_target, DEC_target, RAoffset, DE
     ax.text(center_2[0], center_2[1], s='C2', color=f'C0', fontsize=12)
     ax.text(center_4[0], center_4[1], s='C4', color=f'C0', fontsize=12)
 
-    rect_vertex_GB = [lb2radec(10,-7), lb2radec(10,6.203), lb2radec(-10.405,6.203), lb2radec(-10.405,-7)]
-    polygon_GB = patches.Polygon(rect_vertex_GB, facecolor='black', alpha=1.0)
-    ax.add_patch(polygon_GB)
-    ax.set_xlim(RA_target-1.5, RA_target+1.5)
-    ax.set_ylim(DEC_target-1.5, DEC_target+1.5)
+    # rect_vertex_GB = [lb2radec(10,-7), lb2radec(10,6.203), lb2radec(-10.405,6.203), lb2radec(-10.405,-7)]
+    # polygon_GB = patches.Polygon(rect_vertex_GB, facecolor='black', alpha=1.0)
+    # ax.add_patch(polygon_GB)
+    # ax.set_xlim(RA_target-1.5, RA_target+1.5)
+    # ax.set_ylim(DEC_target-1.5, DEC_target+1.5)
     plt.legend()
     plt.locator_params(axis='x',nbins=5)
     plt.locator_params(axis='y',nbins=5)
