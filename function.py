@@ -3,6 +3,7 @@ import csv
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import pandas as pd
+import re
 from astropy.coordinates import SkyCoord
 from astropy.coordinates import Angle
 from astropy import units as u
@@ -216,9 +217,7 @@ def lb2radec(l, b):
     return RA, DEC
 
 def find_closest_object(ra, dec, csv_path, num_closest=20):
-    #*CSVを読み込む
     df = pd.read_table(csv_path, sep=" ", header=None)
-    #*RA, DECが適切な範囲内にある行のみを保持
     df = df[df[1].between(0, 360)]
     df = df[df[2].between(-90, 90)]
 
@@ -228,18 +227,14 @@ def find_closest_object(ra, dec, csv_path, num_closest=20):
     # df = df[df[1].between(ra_deg_target-90, ra_deg_target+90)]
     df = df[df[2].between(dec_deg_target-10, dec_deg_target+10)]
 
-    #*天球座標を作成
     df_coords = SkyCoord(df[1], df[2], frame='icrs', unit=(u.deg, u.deg))
     target_coord = SkyCoord(ra, dec, frame='icrs', unit=(u.hourangle, u.deg))
 
-    #*距離を計算
     dists = target_coord.separation(df_coords)
 
-    #*距離でソート
     df['dist'] = dists.deg
     df = df.sort_values('dist')
 
-    #*最も近いnum_closest個のオブジェクトを取得
     # if np.abs(dec_deg_target) < 80:
     #   num_closest=4
     # else :
@@ -590,3 +585,38 @@ def plot_closest_objects_nogrid(Object_name, RA_target, DEC_target, RAoffset, DE
     plt.show(block=False)
 
     response = input("After confirming the target and the optimal grid positions, press enter to continue: \n")
+
+def read_counter(counter_file_path, name_prop_cur):
+    try:
+        with open(counter_file_path, 'r') as f:
+            list = f.readlines()
+            for i ,row in enumerate(list):
+                row_tmp = row.rstrip('\n')
+                row_tmp = re.split(',', row_tmp)
+                name_prop = row_tmp[0]
+                if name_prop_cur == name_prop:
+                    count = int(row_tmp[1])
+                    flag = False
+                    print('Remake',"'",name_prop_cur,"'.")
+                    break
+                else:
+                    if i == len(list) - 1:
+                        count = int(row_tmp[1])
+                        flag = True
+                        print('New script name is',"'",name_prop_cur,"'.")
+                    else:
+                        pass
+
+    except FileNotFoundError:
+        count = 0
+        flag = True
+        print('New script name is',"'",name_prop_cur,"'.")
+    except ValueError:
+        count = 0
+        flag = True
+        print('New script name is',"'",name_prop_cur,"'.")
+    return count, flag
+
+def write_counter(counter_file_path, name_prop, count):
+    with open(counter_file_path, 'a') as f:
+        f.write(f'{name_prop},{count}\n')

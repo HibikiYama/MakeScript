@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
@@ -7,6 +8,8 @@ import sys
 import re
 import subprocess
 import math
+from appdirs import user_data_dir
+from datetime import datetime, date, time, timezone
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
@@ -420,7 +423,6 @@ else:
                         list = f.readlines()
                         numbers = len(list)
 
-                        n = 0
                         for i, row in enumerate(list):
                             row_tmp = row.rstrip('\n')
                             row_tmp = re.split(',', row)
@@ -433,11 +435,18 @@ else:
                             elif not row.isspace():
                                 row = row.rstrip('\n')
                                 row = re.split(',', row)
-                                n += 1
-                                ns = str(n)
-                                n_zero = ns.zfill(5)
 
-                                with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '', encoding='utf-8') as f:
+                                with open('Script/' + ScriptName[0] + '.csv', mode = 'a+', newline = '', encoding='utf-8') as f:
+                                    f.seek(0)
+                                    lines = f.readlines()
+                                    last_row = lines[-1]
+                                    last_row_tmp = last_row.rstrip('\n')
+                                    last_row_tmp = re.split(',', last_row_tmp)
+                                    last_id = last_row_tmp[1]
+                                    split_last_id = last_id.split('_')[1]
+                                    last_id_n = int(split_last_id.lstrip('0'))
+                                    ns = str(1+last_id_n)
+                                    n_zero = ns.zfill(5)
 
                                     Observer = row[0]
 
@@ -516,9 +525,9 @@ else:
                                             ROToffset = round(3600*ROT,1)
                                             fun.plot_closest_objects_nogrid(row[16], RA, DEC, RAoffset, DECoffset)
                                     except Exception as e:
-                                        print(f"Unexpected error: {e}")
-                                        print(f'Please check line{i+1} in the proposal file.')
-                                        response = input("After confirming the error meesage, press enter to continue: \n")
+                                        print(f"\033[31m Unexpected error: {e} \033[0m")
+                                        print(f'\033[31m Please check line{i+1} in the proposal file. \033[0m')
+                                        response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
                                         continue
 
                                     Filter1 = row[7]
@@ -533,7 +542,7 @@ else:
                                     Comment2 = row[16]
 
                                     Priority = Offset[0]
-                                    BlockID = 'P'+n_zero
+                                    BlockID = last_id.split('_')[0]+'_'+n_zero
                                     # Observer = Offset[2]
                                     #ObjectName = Offset[3]
                                     # ObjectType = Offset[4]
@@ -559,8 +568,37 @@ else:
                         sys.exit()
 
 
-            print('New script name is',"'",ScriptName[0],"'.")
             command = ['rm','-rf', 'Script/'+ ScriptName[0]+'.csv']
+
+            #*check semester
+            app_name = 'MakeScript'
+            date = datetime.now(timezone.utc)
+            year = date.timetuple()[0] - 2000 #*ex) 24 = 2024 - 2000
+            month = date.timetuple()[1]
+            if month - 6 <= 0 :
+                sem = f'{year}' + 'A'
+                data_dir = user_data_dir(app_name)
+                os.makedirs(data_dir, exist_ok=True)
+                counter_file_path = os.path.join(data_dir, '.S' + sem + 'counter.txt')
+                count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName[0])
+                if flag == True:
+                    count += 1
+                    fun.write_counter(counter_file_path=counter_file_path, name_prop=ScriptName[0], count=count)
+                elif flag == False:
+                    pass
+
+            else:
+                sem = f'{year}' + 'B'
+                data_dir = user_data_dir(app_name)
+                os.makedirs(data_dir, exist_ok=True)
+                counter_file_path = os.path.join(data_dir, '.S' + sem + 'counter.txt')
+                count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName[0])
+                if flag == True:
+                    count += 1
+                    fun.write_counter(counter_file_path=counter_file_path, name_prop=ScriptName[0], count=count)
+                elif flag == False:
+                    pass
+
             subprocess.call(command)
             with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '', encoding='utf-8') as F:
                 writer = csv.writer(F)
@@ -672,9 +710,9 @@ else:
                                     fun.plot_closest_objects_nogrid(row[16], RA, DEC, RAoffset, DECoffset)
 
                             except Exception as e:
-                                print(f"Unexpected error: {e}")
-                                print(f'Please check line{i+1} in the proposal file.')
-                                response = input("After confirming the error meesage, press enter to continue: \n")
+                                print(f"\033[31m Unexpected error: {e} \033[0m")
+                                print(f'\033[31m Please check line{i+1} in the proposal file. \033[0m')
+                                response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
                                 continue
 
                             Filter1 = row[7]
@@ -697,7 +735,7 @@ else:
 #########################################################################
 
                             Priority = Offset[0]
-                            BlockID = 'P'+n_zero
+                            BlockID = 'S'+sem+str(count).zfill(3)+'_'+n_zero
                             # Observer = Offset[2]
                             #ObjectName = Offset[3]
                             # ObjectType = Offset[4]
