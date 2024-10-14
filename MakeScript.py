@@ -564,7 +564,7 @@ else:
 
                                     writer = csv.writer(f)
                                     writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
-                        print('------------------------------------ \nCompleted new script!')
+                        print('------------------------------------ \nCompleted adding to script!')
                         sys.exit()
 
 
@@ -576,10 +576,10 @@ else:
             year = date.timetuple()[0] - 2000 #*ex) 24 = 2024 - 2000
             month = date.timetuple()[1]
             if month - 6 <= 0 :
-                sem = f'{year}' + 'A'
+                sem = f'S{year}A'
                 data_dir = user_data_dir(app_name)
                 os.makedirs(data_dir, exist_ok=True)
-                counter_file_path = os.path.join(data_dir, '.S' + sem + 'counter.txt')
+                counter_file_path = os.path.join(data_dir, '.' + sem + 'counter.txt')
                 count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName[0])
                 if flag == True:
                     count += 1
@@ -588,10 +588,10 @@ else:
                     pass
 
             else:
-                sem = f'{year}' + 'B'
+                sem = f'S{year}B'
                 data_dir = user_data_dir(app_name)
                 os.makedirs(data_dir, exist_ok=True)
-                counter_file_path = os.path.join(data_dir, '.S' + sem + 'counter.txt')
+                counter_file_path = os.path.join(data_dir, '.' + sem + 'counter.txt')
                 count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName[0])
                 if flag == True:
                     count += 1
@@ -610,7 +610,7 @@ else:
                     n = 0
                     for i, row in enumerate(list):
                         row_tmp = row.rstrip('\n')
-                        row_tmp = re.split(',', row)
+                        row_tmp = re.split(',', row_tmp)
                         if i == 0 and row_tmp[0] in ['\ufeffObserver(PI institute)', 'Observer(PI institute)']:
                             continue
 
@@ -725,6 +725,7 @@ else:
                             IntegrationTime = 0.1*math.floor(10*float(row[14]))
                             Comment1 = row[15]
                             Comment2 = row[16]
+                            SpecificTime = row[17]
 
 #########################################################################
 #########################################################################
@@ -735,7 +736,7 @@ else:
 #########################################################################
 
                             Priority = Offset[0]
-                            BlockID = 'S'+sem+str(count).zfill(3)+'_'+n_zero
+                            BlockID = sem+str(count).zfill(3)+'_'+n_zero
                             # Observer = Offset[2]
                             #ObjectName = Offset[3]
                             # ObjectType = Offset[4]
@@ -756,7 +757,14 @@ else:
                             # Comment2 = Offset[19]
 #########################################################################
 #########################################################################
+                            #*write SpecificTime in the text file
+                            stime_file_path = os.path.join(data_dir, '.' + sem + 'stime.txt')
+                            if SpecificTime == '':
+                                pass
+                            else:
+                                with open(stime_file_path, 'a') as f:
+                                    f.write(f'{ScriptName[0]},{BlockID},{SpecificTime}\n')
 
                             writer = csv.writer(F)
                             writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
-                print('------------------------------------ \nCompleted new script!!')
+                print('------------------------------------ \nCompleted making new script!!')

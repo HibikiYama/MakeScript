@@ -8,6 +8,7 @@ from astropy.coordinates import SkyCoord
 from astropy.coordinates import Angle
 from astropy import units as u
 from astropy.io import ascii
+from datetime import datetime, timezone, timedelta
 
 def MakeScriptName():
     print('New script name is ...')
@@ -620,3 +621,15 @@ def read_counter(counter_file_path, name_prop_cur):
 def write_counter(counter_file_path, name_prop, count):
     with open(counter_file_path, 'a') as f:
         f.write(f'{name_prop},{count}\n')
+
+def utc2sast(utc_datetime):
+    utc = timezone.utc
+
+    if utc_datetime.tzinfo is None:
+        utc_datetime = utc_datetime.replace(tzinfo=utc)
+
+    utc_plus_2 = timezone(timedelta(hours=2))
+
+    sast_datetime = utc_datetime.astimezone(utc_plus_2)
+
+    return sast_datetime
