@@ -759,11 +759,24 @@ else:
 #########################################################################
                             #*write SpecificTime in the text file
                             stime_file_path = os.path.join(data_dir, '.' + sem + 'stime.txt')
+                            n_same_BID = 0
                             if SpecificTime == '':
                                 pass
                             else:
-                                with open(stime_file_path, 'a') as f:
-                                    f.write(f'{ScriptName[0]},{BlockID},{SpecificTime}\n')
+                                with open(stime_file_path, 'a+') as f:
+                                    f.seek(0)
+                                    lines = f.readlines()
+                                    for i, row in enumerate(lines):
+                                        row_tmp = row.rstrip('\n')
+                                        row_tmp = re.split(',', row_tmp)
+                                        if row_tmp[1] == BlockID:
+                                            n_same_BID += 1
+                                        else:
+                                            n_same_BID += 0
+                                    if n_same_BID == 0:
+                                        f.write(f'{ScriptName[0]},{BlockID},{SpecificTime}\n')
+                                    else:
+                                        pass
 
                             writer = csv.writer(F)
                             writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
