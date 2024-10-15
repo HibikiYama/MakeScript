@@ -562,6 +562,27 @@ else:
                                     # Comment1 = Offset[18]
                                     # Comment2 = Offset[19]
 
+                                    #*write SpecificTime in the text file
+                                    stime_file_path = os.path.join(data_dir, '.' + sem + 'stime.txt')
+                                    n_same_BID = 0
+                                    if SpecificTime == '':
+                                        pass
+                                    else:
+                                        with open(stime_file_path, 'a+') as f:
+                                            f.seek(0)
+                                            lines = f.readlines()
+                                            for i, row in enumerate(lines):
+                                                row_tmp = row.rstrip('\n')
+                                                row_tmp = re.split(',', row_tmp)
+                                                if row_tmp[1] == BlockID:
+                                                    n_same_BID += 1
+                                                else:
+                                                    n_same_BID += 0
+                                            if n_same_BID == 0:
+                                                f.write(f'{ScriptName[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
+                                            else:
+                                                pass
+
                                     writer = csv.writer(f)
                                     writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
                         print('------------------------------------ \nCompleted adding to script!')
@@ -726,6 +747,8 @@ else:
                             Comment1 = row[15]
                             Comment2 = row[16]
                             SpecificTime = row[17]
+                            Priority_tmp = row[18]
+                            comment_tmp = row[19]
 
 #########################################################################
 #########################################################################
@@ -774,7 +797,7 @@ else:
                                         else:
                                             n_same_BID += 0
                                     if n_same_BID == 0:
-                                        f.write(f'{ScriptName[0]},{BlockID},{SpecificTime}\n')
+                                        f.write(f'{ScriptName[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
                                     else:
                                         pass
 
