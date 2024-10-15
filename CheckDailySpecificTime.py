@@ -56,7 +56,10 @@ with open(stime_file_path, mode='r') as f:
                 if int(day) == int(day_tar):
                     if int(start_hour) > 12:
                         utc_datetime_start = datetime(int(year_tar), int(month_tar), int(day_tar), int(start_hour), int(start_min))
-                        utc_datetime_end = datetime(int(year_tar), int(month_tar), int(day_tar), int(end_hour), int(end_min))
+                        if int(end_hour) >= int(start_hour):
+                            utc_datetime_end = datetime(int(year_tar), int(month_tar), int(day_tar), int(end_hour), int(end_min))
+                        elif int(end_hour) < int(start_hour):
+                            utc_datetime_end = datetime(int(year_tar), int(month_tar), int(day_tar) + 1, int(end_hour), int(end_min))
                         sast_start = fun.utc2sast(utc_datetime_start)
                         sast_end = fun.utc2sast(utc_datetime_end)
                         row_new = script_name + ', ' + block_id + ', ' + str(sast_start.date()) +' '+ str(sast_start.time()) + ' - ' + str(sast_end.date()) +' '+ str(sast_end.time()) + ' (SAST)\n'
