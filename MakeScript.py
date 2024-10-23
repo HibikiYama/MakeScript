@@ -451,19 +451,27 @@ else:
                                     Observer = row[0]
 
                                     ObjectType = row[2]
+                                    #! If row[1] is all_sky_grid or bulge_grid, FiledName is not blank.
+                                    FieldName = row[3]
+
+                                    RA_tmp = row[4]
+                                    DEC_tmp = row[5]
+                                    RAoffset_tmp = row[6]
+                                    DECoffset_tmp = row[7]
+                                    ROToffset_tmp = row[8]
 
                                     for k in range(0,len(argv)):
                                         if argv[k] == '-lb':
-                                            galactic_coord = SkyCoord(l=float(row[3])*u.degree, b=float(row[4])*u.degree, frame='galactic')
+                                            galactic_coord = SkyCoord(l=float(RA_tmp)*u.degree, b=float(DEC_tmp)*u.degree, frame='galactic')
                                             equatorial_coord = galactic_coord.transform_to('icrs')
                                             RA = equatorial_coord.ra.to_string(unit=u.hour, sep=':', precision=2)
                                             DEC = equatorial_coord.dec.to_string(unit=u.degree, sep=':', precision=2)
                                             (best_rot, rot_arr, inners) = fr.search_best_rot(equatorial_coord)
-                                            ROToffset = round(3600*(-best_rot+ROT),1)
+                                            ROToffset = round(3600*(-best_rot+ROT+ROToffset_tmp),1)
 
                                         elif argv[k] == '-rd':
-                                            if ':' in row[3] and row[4]:
-                                                RA = row[3]  #* h:m:s
+                                            if ':' in RA_tmp and DEC_tmp:
+                                                RA = RA_tmp  #h:m:s
                                                 RA = re.split(':',RA)
                                                 RAh = RA[0]
                                                 if str(RAh)[0] == '-':
@@ -478,7 +486,7 @@ else:
                                                     RAs = round(float(RA[2]),1)
                                                     RA = '{0}:{1}:{2}'.format(RAh, RAm, RAs)
 
-                                                DEC = row[4]  #* d:m:s
+                                                DEC = DEC_tmp  #d:m:s
                                                 DEC = re.split(':',DEC)
                                                 DECd = DEC[0]
                                                 if str(DECd)[0] == '-':
@@ -497,49 +505,70 @@ else:
                                             #     RA = deg2HMS(ra= float(row[3]))  #degree
                                             #     DEC = deg2HMS(dec= float(row[4]))  #degree
 
+                                    #! if all_sky_grid or bulge_grid is slected, RA and DEC in the script for ccmain will be the position of the closest grid field.
                                     try:
                                         if row[1] == 'all_sky_grid':
                                             closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
                                             ObjectName = f'field{int(closest_object[0][0])}'
-                                            RA = closest_object[0][1]
-                                            DEC = closest_object[0][2]
-                                            RAoffset = '0'
-                                            DECoffset = '0'
-                                            ROToffset = round(3600*ROT,1)
-                                            fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
+                                            if FieldName == ObjectName:
+                                                RA_closest = closest_object[0][1]
+                                                DEC_closest = closest_object[0][2]
+                                                RAoffset = RAoffset_tmp
+                                                DECoffset = DECoffset_tmp
+                                                ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                                fun.plot_closest_objects_all_sky(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROToffset_tmp)
+                                                RA = RA_closest
+                                                DEC = DEC_closest
+                                            else:
+                                                print(f"\033[31m FieldName({FieldName}) is not same as the optimal all_sky_grid field({ObjectName}). \033[0m")
+                                                print(f"\033[31m Please check line {i+1} in the proposal file. \033[0m")
+                                                response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
+                                                continue
 
                                         elif row[1] == 'bulge_grid':
                                             closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
                                             ObjectName = f'GB{int(closest_object[0][0])}'
-                                            RA = closest_object[0][1]
-                                            DEC = closest_object[0][2]
-                                            RAoffset = '0'
-                                            DECoffset = '0'
-                                            ROToffset = closest_object[0][3]
-                                            fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
+                                            if FieldName == ObjectName:
+                                                RA_closest = closest_object[0][1]
+                                                DEC_closest = closest_object[0][2]
+                                                RAoffset = RAoffset_tmp
+                                                DECoffset = DECoffset_tmp
+                                                ROToffset = closest_object[0][3] + 3600*int(ROToffset_tmp)
+                                                fun.plot_closest_objects_bulge(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROT*3600-closest_object[0][3], ROToffset_tmp)
+                                                RA = RA_closest
+                                                DEC = DEC_closest
+                                            else:
+                                                print(f"\033[31m FieldName({FieldName}) is not same as the optimal bulge_grid field({ObjectName}). \033[0m")
+                                                print(f"\033[31m Please check line {i+1} in the proposal file. \033[0m")
+                                                response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
+                                                continue
 
                                         elif row[1] == 'no_grid':
                                             ObjectName = row[1]
-                                            RAoffset = row[5]
-                                            DECoffset = row[6]
-                                            ROToffset = round(3600*ROT,1)
-                                            fun.plot_closest_objects_nogrid(row[16], RA, DEC, RAoffset, DECoffset)
+                                            RAoffset = RAoffset_tmp
+                                            DECoffset = DECoffset_tmp
+                                            ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                            fun.plot_closest_objects_nogrid(row[17], RA, DEC, RAoffset, DECoffset, ROToffset_tmp)
+
                                     except Exception as e:
                                         print(f"\033[31m Unexpected error: {e} \033[0m")
-                                        print(f'\033[31m Please check line{i+1} in the proposal file. \033[0m')
+                                        print(f'\033[31m Please check line {i+1} in the proposal file. \033[0m')
                                         response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
                                         continue
 
-                                    Filter1 = row[7]
-                                    Filter2 = row[8]
-                                    DitherType = row[9]
-                                    DitherRadius = row[10]
-                                    DitherPhase = row[11]
-                                    DitherTotal = row[12]
-                                    Images = row[13]
-                                    IntegrationTime = 0.1*math.floor(10*float(row[14]))
-                                    Comment1 = row[15]
-                                    Comment2 = row[16]
+                                    Filter1 = row[9]
+                                    Filter2 = row[10]
+                                    DitherType = row[11]
+                                    DitherRadius = row[12]
+                                    DitherPhase = row[13]
+                                    DitherTotal = row[14]
+                                    Images = row[15]
+                                    IntegrationTime = 0.1*math.floor(10*float(row[16]))
+                                    Comment1 = row[17]
+                                    Comment2 = row[18]
+                                    SpecificTime = row[19]
+                                    Priority_tmp = row[20]
+                                    comment_tmp = row[21]
 
                                     Priority = Offset[0]
                                     BlockID = last_id.split('_')[0]+'_'+n_zero
@@ -563,6 +592,16 @@ else:
                                     # Comment2 = Offset[19]
 
                                     #*write SpecificTime in the text file
+                                    #*check semester
+                                    app_name = 'MakeScript'
+                                    data_dir = user_data_dir(app_name)
+                                    date = datetime.now(timezone.utc)
+                                    year = date.timetuple()[0] - 2000 #*ex) 24 = 2024 - 2000
+                                    month = date.timetuple()[1]
+                                    if month - 6 <= 0 :
+                                        sem = f'S{year}A'
+                                    else:
+                                        sem = f'S{year}B'
                                     stime_file_path = os.path.join(data_dir, '.' + sem + 'stime.txt')
                                     n_same_BID = 0
                                     if SpecificTime == '':
@@ -656,19 +695,27 @@ else:
                                 ObjectName = row[1]
 
                             ObjectType = row[2]
+                            #! If row[1] is all_sky_grid or bulge_grid, FiledName is not blank.
+                            FieldName = row[3]
+
+                            RA_tmp = row[4]
+                            DEC_tmp = row[5]
+                            RAoffset_tmp = row[6]
+                            DECoffset_tmp = row[7]
+                            ROToffset_tmp = row[8]
 
                             for k in range(0,len(argv)):
                                 if argv[k] == '-lb':
-                                    galactic_coord = SkyCoord(l=float(row[3])*u.degree, b=float(row[4])*u.degree, frame='galactic')
+                                    galactic_coord = SkyCoord(l=float(RA_tmp)*u.degree, b=float(DEC_tmp)*u.degree, frame='galactic')
                                     equatorial_coord = galactic_coord.transform_to('icrs')
                                     RA = equatorial_coord.ra.to_string(unit=u.hour, sep=':', precision=2)
                                     DEC = equatorial_coord.dec.to_string(unit=u.degree, sep=':', precision=2)
                                     (best_rot, rot_arr, inners) = fr.search_best_rot(equatorial_coord)
-                                    ROToffset = round(3600*(-best_rot+ROT),1)
+                                    ROToffset = round(3600*(-best_rot+ROT+ROToffset_tmp),1)
 
                                 elif argv[k] == '-rd':
-                                    if ':' in row[3] and row[4]:
-                                        RA = row[3]  #h:m:s
+                                    if ':' in RA_tmp and DEC_tmp:
+                                        RA = RA_tmp  #h:m:s
                                         RA = re.split(':',RA)
                                         RAh = RA[0]
                                         if str(RAh)[0] == '-':
@@ -683,7 +730,7 @@ else:
                                             RAs = round(float(RA[2]),1)
                                             RA = '{0}:{1}:{2}'.format(RAh, RAm, RAs)
 
-                                        DEC = row[4]  #d:m:s
+                                        DEC = DEC_tmp  #d:m:s
                                         DEC = re.split(':',DEC)
                                         DECd = DEC[0]
                                         if str(DECd)[0] == '-':
@@ -702,53 +749,70 @@ else:
                                     #     RA = deg2HMS(ra= float(row[3]))  #degree
                                     #     DEC = deg2HMS(dec= float(row[4]))  #degree
 
+                            #! if all_sky_grid or bulge_grid is slected, RA and DEC in the script for ccmain will be the position of the closest grid field.
                             try:
                                 if row[1] == 'all_sky_grid':
                                     closest_object = fun.find_closest_object(RA, DEC, 'List/grid_20230711.txt', num_closest=1)
                                     ObjectName = f'field{int(closest_object[0][0])}'
-                                    RA = closest_object[0][1]
-                                    DEC = closest_object[0][2]
-                                    RAoffset = '0'
-                                    DECoffset = '0'
-                                    ROToffset = round(3600*ROT,1)
-                                    fun.plot_closest_objects_all_sky(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset)
+                                    if FieldName == ObjectName:
+                                        RA_closest = closest_object[0][1]
+                                        DEC_closest = closest_object[0][2]
+                                        RAoffset = RAoffset_tmp
+                                        DECoffset = DECoffset_tmp
+                                        ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                        fun.plot_closest_objects_all_sky(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROToffset_tmp)
+                                        RA = RA_closest
+                                        DEC = DEC_closest
+                                    else:
+                                        print(f"\033[31m FieldName({FieldName}) is not same as the optimal all_sky_grid field({ObjectName}). \033[0m")
+                                        print(f"\033[31m Please check line {i+1} in the proposal file. \033[0m")
+                                        response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
+                                        continue
 
                                 elif row[1] == 'bulge_grid':
                                     closest_object = fun.find_closest_object(RA, DEC, 'List/PRIME_LB_20230719_deg.txt', num_closest=1)
                                     ObjectName = f'GB{int(closest_object[0][0])}'
-                                    RA = closest_object[0][1]
-                                    DEC = closest_object[0][2]
-                                    RAoffset = '0'
-                                    DECoffset = '0'
-                                    ROToffset = closest_object[0][3]
-                                    fun.plot_closest_objects_bulge(ObjectName, row[3], row[4], RA, DEC, RAoffset, DECoffset, ROT*3600-ROToffset)
+                                    if FieldName == ObjectName:
+                                        RA_closest = closest_object[0][1]
+                                        DEC_closest = closest_object[0][2]
+                                        RAoffset = RAoffset_tmp
+                                        DECoffset = DECoffset_tmp
+                                        ROToffset = closest_object[0][3] + 3600*int(ROToffset_tmp)
+                                        fun.plot_closest_objects_bulge(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROT*3600-closest_object[0][3], ROToffset_tmp)
+                                        RA = RA_closest
+                                        DEC = DEC_closest
+                                    else:
+                                        print(f"\033[31m FieldName({FieldName}) is not same as the optimal bulge_grid field({ObjectName}). \033[0m")
+                                        print(f"\033[31m Please check line {i+1} in the proposal file. \033[0m")
+                                        response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
+                                        continue
 
                                 elif row[1] == 'no_grid':
                                     ObjectName = row[1]
-                                    RAoffset = row[5]
-                                    DECoffset = row[6]
-                                    ROToffset = round(3600*ROT,1)
-                                    fun.plot_closest_objects_nogrid(row[16], RA, DEC, RAoffset, DECoffset)
+                                    RAoffset = RAoffset_tmp
+                                    DECoffset = DECoffset_tmp
+                                    ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                    fun.plot_closest_objects_nogrid(row[17], RA, DEC, RAoffset, DECoffset, ROToffset_tmp)
 
                             except Exception as e:
                                 print(f"\033[31m Unexpected error: {e} \033[0m")
-                                print(f'\033[31m Please check line{i+1} in the proposal file. \033[0m')
+                                print(f'\033[31m Please check line {i+1} in the proposal file. \033[0m')
                                 response = input("\033[31m After confirming the error meesage, press enter to continue: \033[0m \n")
                                 continue
 
-                            Filter1 = row[7]
-                            Filter2 = row[8]
-                            DitherType = row[9]
-                            DitherRadius = row[10]
-                            DitherPhase = row[11]
-                            DitherTotal = row[12]
-                            Images = row[13]
-                            IntegrationTime = 0.1*math.floor(10*float(row[14]))
-                            Comment1 = row[15]
-                            Comment2 = row[16]
-                            SpecificTime = row[17]
-                            Priority_tmp = row[18]
-                            comment_tmp = row[19]
+                            Filter1 = row[9]
+                            Filter2 = row[10]
+                            DitherType = row[11]
+                            DitherRadius = row[12]
+                            DitherPhase = row[13]
+                            DitherTotal = row[14]
+                            Images = row[15]
+                            IntegrationTime = 0.1*math.floor(10*float(row[16]))
+                            Comment1 = row[17]
+                            Comment2 = row[18]
+                            SpecificTime = row[19]
+                            Priority_tmp = row[20]
+                            comment_tmp = row[21]
 
 #########################################################################
 #########################################################################
