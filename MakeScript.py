@@ -19,6 +19,7 @@ argv = sys.argv
 header = np.array(['Priority', 'BlockID', 'Observer', 'ObjectName', 'ObjectType', 'RA', 'DEC', 'RAoffset', 'DECoffset', 'ROToffset', 'Filter1', 'Filter2', 'DitherType', 'DitherRadius', 'DitherPhase', 'DitherTotal', 'Images', 'IntegrationTime', 'Comment1', 'Comment2'])
 
 ROT = 48
+print("\nPlease wait a while...")
 ############################################################
 
 def CheckValue(func):
