@@ -456,9 +456,9 @@ else:
 
                                     RA_tmp = row[4]
                                     DEC_tmp = row[5]
-                                    RAoffset_tmp = row[6]
-                                    DECoffset_tmp = row[7]
-                                    ROToffset_tmp = row[8]
+                                    RAoffset_tmp = float(row[6])
+                                    DECoffset_tmp = float(row[7])
+                                    ROToffset_tmp = float(row[8])
 
                                     for k in range(0,len(argv)):
                                         if argv[k] == '-lb':
@@ -515,7 +515,7 @@ else:
                                                 DEC_closest = closest_object[0][2]
                                                 RAoffset = RAoffset_tmp
                                                 DECoffset = DECoffset_tmp
-                                                ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                                ROToffset = round(3600*(ROT+ROToffset_tmp),1)
                                                 fun.plot_closest_objects_all_sky(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROToffset_tmp)
                                                 RA = RA_closest
                                                 DEC = DEC_closest
@@ -533,7 +533,7 @@ else:
                                                 DEC_closest = closest_object[0][2]
                                                 RAoffset = RAoffset_tmp
                                                 DECoffset = DECoffset_tmp
-                                                ROToffset = closest_object[0][3] + 3600*int(ROToffset_tmp)
+                                                ROToffset = closest_object[0][3] + 3600*ROToffset_tmp
                                                 fun.plot_closest_objects_bulge(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROT*3600-closest_object[0][3], ROToffset_tmp)
                                                 RA = RA_closest
                                                 DEC = DEC_closest
@@ -547,7 +547,7 @@ else:
                                             ObjectName = row[1]
                                             RAoffset = RAoffset_tmp
                                             DECoffset = DECoffset_tmp
-                                            ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                            ROToffset = round(3600*(ROT+ROToffset_tmp),1)
                                             fun.plot_closest_objects_nogrid(row[17], RA, DEC, RAoffset, DECoffset, ROToffset_tmp)
 
                                     except Exception as e:
@@ -623,7 +623,7 @@ else:
                                                 pass
 
                                     writer = csv.writer(f)
-                                    writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
+                                    writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, int(ROToffset), Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
                         print('------------------------------------ \nCompleted adding to script!')
                         sys.exit()
 
@@ -700,9 +700,9 @@ else:
 
                             RA_tmp = row[4]
                             DEC_tmp = row[5]
-                            RAoffset_tmp = row[6]
-                            DECoffset_tmp = row[7]
-                            ROToffset_tmp = row[8]
+                            RAoffset_tmp = float(row[6])
+                            DECoffset_tmp = float(row[7])
+                            ROToffset_tmp = float(row[8])
 
                             for k in range(0,len(argv)):
                                 if argv[k] == '-lb':
@@ -711,7 +711,7 @@ else:
                                     RA = equatorial_coord.ra.to_string(unit=u.hour, sep=':', precision=2)
                                     DEC = equatorial_coord.dec.to_string(unit=u.degree, sep=':', precision=2)
                                     (best_rot, rot_arr, inners) = fr.search_best_rot(equatorial_coord)
-                                    ROToffset = round(3600*(-best_rot+ROT+ROToffset_tmp),1)
+                                    ROToffset = round(3600*(-float(best_rot) + float(ROT) + ROToffset_tmp ),1)
 
                                 elif argv[k] == '-rd':
                                     if ':' in RA_tmp and DEC_tmp:
@@ -759,7 +759,7 @@ else:
                                         DEC_closest = closest_object[0][2]
                                         RAoffset = RAoffset_tmp
                                         DECoffset = DECoffset_tmp
-                                        ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                        ROToffset = round(3600*(ROT+ROToffset_tmp),1)
                                         fun.plot_closest_objects_all_sky(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROToffset_tmp)
                                         RA = RA_closest
                                         DEC = DEC_closest
@@ -777,7 +777,7 @@ else:
                                         DEC_closest = closest_object[0][2]
                                         RAoffset = RAoffset_tmp
                                         DECoffset = DECoffset_tmp
-                                        ROToffset = closest_object[0][3] + 3600*int(ROToffset_tmp)
+                                        ROToffset = closest_object[0][3] + 3600*ROToffset_tmp
                                         fun.plot_closest_objects_bulge(ObjectName, RA, DEC, RA_closest, DEC_closest, RAoffset, DECoffset, ROT*3600-closest_object[0][3], ROToffset_tmp)
                                         RA = RA_closest
                                         DEC = DEC_closest
@@ -791,7 +791,7 @@ else:
                                     ObjectName = row[1]
                                     RAoffset = RAoffset_tmp
                                     DECoffset = DECoffset_tmp
-                                    ROToffset = round(3600*(ROT+int(ROToffset_tmp)),1)
+                                    ROToffset = round(3600*(ROT+ROToffset_tmp),1)
                                     fun.plot_closest_objects_nogrid(row[17], RA, DEC, RAoffset, DECoffset, ROToffset_tmp)
 
                             except Exception as e:
@@ -866,5 +866,5 @@ else:
                                         pass
 
                             writer = csv.writer(F)
-                            writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, ROToffset, Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
+                            writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, int(ROToffset), Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
                 print('------------------------------------ \nCompleted making new script!!')
