@@ -189,11 +189,16 @@ def deg_to_dms(angle):
     """
     This function converts an angle from the decimal degrees to degrees, minutes, and seconds.
     """
-    deg = int(angle)
-    min = int((angle - deg) * 60)
-    sec = int((angle - deg - min/60) * 3600)
+    angle_abs = np.abs(angle)
 
-    return f"{deg:02d}:{abs(min):02d}:{abs(sec):05.2f}"
+    deg = int(angle_abs)
+    min = int((angle_abs - deg) * 60)
+    sec = round((angle_abs - deg - min / 60) * 3600)
+
+    if angle < 0:
+        return f"-{deg:02d}:{abs(min):02d}:{abs(sec):05.2f}"
+    else:
+        return f"{deg:02d}:{abs(min):02d}:{abs(sec):05.2f}"
 
 def calc_extend_ratio(width, dec):
     a = 2*np.pi*((90-np.abs(dec))/360)
