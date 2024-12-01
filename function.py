@@ -193,7 +193,15 @@ def deg_to_dms(angle):
 
     deg = int(angle_abs)
     min = int((angle_abs - deg) * 60)
-    sec = round((angle_abs - deg - min / 60) * 3600)
+    sec = round((angle_abs - deg - min / 60) * 3600, 3)
+
+    if int(sec) == 60:
+        min += 1
+        sec -= 60
+    
+    if int(min) == 60:
+        deg += 1
+        min -= 60
 
     if angle < 0:
         return f"-{deg:02d}:{abs(min):02d}:{abs(sec):05.2f}"
