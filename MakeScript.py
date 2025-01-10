@@ -628,9 +628,8 @@ else:
                         print('------------------------------------ \nCompleted adding to script!')
                         sys.exit()
 
-
             command = ['rm','-rf', 'Script/'+ ScriptName[0]+'.csv']
-
+            ScriptName_tmp = re.split(' - ', ScriptName[0])
             #*check semester
             app_name = 'MakeScript'
             date = datetime.now(timezone.utc)
@@ -641,10 +640,10 @@ else:
                 data_dir = user_data_dir(app_name)
                 os.makedirs(data_dir, exist_ok=True)
                 counter_file_path = os.path.join(data_dir, '.' + sem + 'counter.txt')
-                count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName[0])
+                count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName_tmp[0])
                 if flag == True:
                     count += 1
-                    fun.write_counter(counter_file_path=counter_file_path, name_prop=ScriptName[0], count=count)
+                    fun.write_counter(counter_file_path=counter_file_path, name_prop=ScriptName_tmp[0], count=count)
                 elif flag == False:
                     pass
 
@@ -653,10 +652,10 @@ else:
                 data_dir = user_data_dir(app_name)
                 os.makedirs(data_dir, exist_ok=True)
                 counter_file_path = os.path.join(data_dir, '.' + sem + 'counter.txt')
-                count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName[0])
+                count, flag = fun.read_counter(counter_file_path=counter_file_path, name_prop_cur=ScriptName_tmp[0])
                 if flag == True:
                     count += 1
-                    fun.write_counter(counter_file_path=counter_file_path, name_prop=ScriptName[0], count=count)
+                    fun.write_counter(counter_file_path=counter_file_path, name_prop=ScriptName_tmp[0], count=count)
                 elif flag == False:
                     pass
 
@@ -862,7 +861,7 @@ else:
                                         else:
                                             n_same_BID += 0
                                     if n_same_BID == 0:
-                                        f.write(f'{ScriptName[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
+                                        f.write(f'{ScriptName_tmp[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
                                     else:
                                         pass
 
