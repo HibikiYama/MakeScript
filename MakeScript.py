@@ -419,7 +419,8 @@ else:
                 if argv[j] == '-add':
                     ScriptName = argv[j+1]
                     ScriptName = ScriptName.split('.')
-                    print('Add to',"'",ScriptName[0],"'.")
+                    ScriptName_tmp = re.split(' - ', ScriptName[0])
+                    print('Add to',"'",ScriptName_tmp[0],"'.")
                     with open('List/'+listname, encoding='utf-8') as f:
                         list = f.readlines()
                         numbers = len(list)
@@ -437,7 +438,7 @@ else:
                                 row = row.rstrip('\n')
                                 row = re.split(',', row)
 
-                                with open('Script/' + ScriptName[0] + '.csv', mode = 'a+', newline = '', encoding='utf-8') as f:
+                                with open('Script/' + ScriptName_tmp[0] + '.csv', mode = 'a+', newline = '', encoding='utf-8') as f:
                                     f.seek(0)
                                     lines = f.readlines()
                                     last_row = lines[-1]
@@ -632,8 +633,8 @@ else:
                         print('------------------------------------ \nCompleted adding to script!')
                         sys.exit()
 
-            command = ['rm','-rf', 'Script/'+ ScriptName[0]+'.csv']
             ScriptName_tmp = re.split(' - ', ScriptName[0])
+            command = ['rm','-rf', 'Script/'+ ScriptName_tmp[0]+'.csv']
             #*check semester
             app_name = 'MakeScript'
             date = datetime.now(timezone.utc)
@@ -664,7 +665,7 @@ else:
                     pass
 
             subprocess.call(command)
-            with open('Script/' + ScriptName[0] + '.csv', mode = 'a', newline = '', encoding='utf-8') as F:
+            with open('Script/' + ScriptName_tmp[0] + '.csv', mode = 'a', newline = '', encoding='utf-8') as F:
                 writer = csv.writer(F)
                 writer.writerow(header)
                 with open('List/'+listname, encoding='utf-8') as f:
