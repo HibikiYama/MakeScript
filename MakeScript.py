@@ -627,6 +627,8 @@ else:
                                                     f_tmp.write(f'{ScriptName_tmp[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
                                             else:
                                                 pass
+                                            f.close()
+                                            f_tmp.close()
                                             os.replace(stime_file_path_tmp, stime_file_path)
                                     writer = csv.writer(f)
                                     writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, int(ROToffset), Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
@@ -873,6 +875,8 @@ else:
                                             f_tmp.write(f'{ScriptName_tmp[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
                                     else:
                                         pass
+                                    f.close()
+                                    f_tmp.close()
                                     os.replace(stime_file_path_tmp, stime_file_path)
                             writer = csv.writer(F)
                             writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, int(ROToffset), Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
