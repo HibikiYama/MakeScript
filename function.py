@@ -218,7 +218,7 @@ def calc_dec_correction(width_extended, dec):
     return dec_correction
 
 def calc_rotation(x, y, degree, x_c=0, y_c=0):
-    rad = np.deg2rad(degree)
+    rad = np.deg2rad(-degree) #*reverse the direction of rotation
     x_r = (x-x_c)*np.cos(rad) - (y-y_c)*np.sin(rad) + x_c
     y_r = (x-x_c)*np.sin(rad) + (y-y_c)*np.cos(rad) + y_c
     return x_r, y_r

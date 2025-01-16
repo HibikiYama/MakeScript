@@ -608,8 +608,10 @@ else:
                                     stime_file_path_tmp = stime_file_path + '.tmp'
                                     n_same_BID = 0
                                     if SpecificTime == '':
+                                        print("No SpecificTime.\n")
                                         pass
                                     else:
+                                        print("Record SpecificTime.\n")
                                         with open(stime_file_path, 'r') as f, open(stime_file_path_tmp, 'w') as f_tmp:
                                             f.seek(0)
                                             lines = f.readlines()
@@ -622,14 +624,12 @@ else:
                                                 else:
                                                     n_same_BID += 0
                                                     f_tmp.write(row)
-                                            if n_same_BID == 0:
-                                                with open(stime_file_path_tmp, 'a+') as f_tmp:
-                                                    f_tmp.write(f'{ScriptName_tmp[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
-                                            else:
-                                                pass
-                                            f.close()
-                                            f_tmp.close()
-                                            os.replace(stime_file_path_tmp, stime_file_path)
+                                        if n_same_BID == 0:
+                                            with open(stime_file_path_tmp, 'a+') as f_tmp:
+                                                f_tmp.write(f'{ScriptName_tmp[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
+                                        else:
+                                            pass
+                                        os.replace(stime_file_path_tmp, stime_file_path)
                                     writer = csv.writer(f)
                                     writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, int(ROToffset), Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
                         print('------------------------------------ \nCompleted adding to script!')
@@ -856,8 +856,10 @@ else:
                             stime_file_path_tmp = stime_file_path + '.tmp'
                             n_same_BID = 0
                             if SpecificTime == '':
+                                print("No SpecificTime.\n")
                                 pass
                             else:
+                                print("Record SpecificTime.\n")
                                 with open(stime_file_path, 'r') as f, open(stime_file_path_tmp, 'w') as f_tmp:
                                     f.seek(0)
                                     lines = f.readlines()
@@ -870,14 +872,12 @@ else:
                                         else:
                                             n_same_BID += 0
                                             f_tmp.write(row)
-                                    if n_same_BID == 0:
-                                        with open(stime_file_path_tmp, 'a+') as f_tmp:
-                                            f_tmp.write(f'{ScriptName_tmp[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
-                                    else:
-                                        pass
-                                    f.close()
-                                    f_tmp.close()
-                                    os.replace(stime_file_path_tmp, stime_file_path)
+                                if n_same_BID == 0:
+                                    with open(stime_file_path_tmp, 'a+') as f_tmp:
+                                        f_tmp.write(f'{ScriptName_tmp[0]},{BlockID},{SpecificTime},{Comment1},{Comment2},{comment_tmp}\n')
+                                else:
+                                    pass
+                                os.replace(stime_file_path_tmp, stime_file_path)
                             writer = csv.writer(F)
                             writer.writerow([Priority, BlockID, Observer, ObjectName, ObjectType, RA, DEC, RAoffset, DECoffset, int(ROToffset), Filter1, Filter2, DitherType, DitherRadius, DitherPhase, DitherTotal, Images, IntegrationTime, Comment1, Comment2])
                 print('------------------------------------ \nCompleted making new script!!')
