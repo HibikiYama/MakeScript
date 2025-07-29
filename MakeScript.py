@@ -606,6 +606,10 @@ else:
                                         sem = f'S{year}B'
                                     stime_file_path = os.path.join(data_dir, '.' + sem + 'stime.txt')
                                     stime_file_path_tmp = stime_file_path + '.tmp'
+                                    if not os.path.exists(stime_file_path):
+                                        with open(stime_file_path, 'w') as f:
+                                            pass
+
                                     n_same_BID = 0
                                     if SpecificTime == '':
                                         print("No SpecificTime.\n")
@@ -854,6 +858,10 @@ else:
                             #*write SpecificTime in the text file
                             stime_file_path = os.path.join(data_dir, '.' + sem + 'stime.txt')
                             stime_file_path_tmp = stime_file_path + '.tmp'
+                            if not os.path.exists(stime_file_path):
+                                with open(stime_file_path, 'w') as f:
+                                    pass
+
                             n_same_BID = 0
                             if SpecificTime == '':
                                 print("No SpecificTime.\n")
